@@ -7,7 +7,7 @@
 @section('website-content')
     {{-- @php
         $heroBg = $business->business_img
-            // ? ('http://localhost/Mergersales/storage/app/public/' . ltrim($business->business_img, '/'))
+            // ? ('http://mergersales.com/storage/app/public/' . ltrim($business->business_img, '/'))
             : asset('images/22.jpg');
     @endphp --}}
 
