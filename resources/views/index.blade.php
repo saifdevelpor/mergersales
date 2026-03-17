@@ -37,8 +37,6 @@
                                 Business</option>
                             <option value="Raise Capital" {{ request('deal_type') == 'Raise Capital' ? 'selected' : '' }}>
                                 Raise Capital</option>
-                            <option value="Find Buyer" {{ request('deal_type') == 'Find Buyer' ? 'selected' : '' }}>Find
-                                Buyer
                             </option>
                             <option value="Find Partner" {{ request('deal_type') == 'Find Partner' ? 'selected' : '' }}>Find
                                 Partner</option>
@@ -71,7 +69,7 @@
 
 
             <div class="hero-notifer hn_center fl-wrap">
-                All listings are 100% anonymous | <a href="#">Advanced Search</a>
+                All listings are 100% anonymous | <a href="{{ route('webite-business') }}">Advanced Search</a>
             </div>
         </div>
     </section>
@@ -93,7 +91,6 @@
                                 Types</span></a>
                         <a href="#" class="gallery-filter" data-filter=".for_sale"><span>Sell Business</span></a>
                         <a href="#" class="gallery-filter" data-filter=".capital_raise"><span>Raise Capital</span></a>
-                        <a href="#" class="gallery-filter" data-filter=".find_buyer"><span>Find Buyer</span></a>
                         <a href="#" class="gallery-filter" data-filter=".find_partner"><span>Find Partner</span></a>
                     </div>
                 </div>
@@ -110,7 +107,6 @@
                         $map = [
                             'sell_business' => 'for_sale',
                             'raise_capital' => 'capital_raise',
-                            'find_buyer' => 'find_buyer',
                             'find_partner' => 'find_partner',
                             'for_sale' => 'for_sale',
                             'capital_raise' => 'capital_raise',
@@ -205,7 +201,7 @@
                                     </div>
 
                                     <div class="geodir-category-footer fl-wrap" style="margin-top:auto;">
-                                        <a href="#" class="gcf-company">
+                                        <a href="{{ route('business.single', $listing->id) }}" class="gcf-company">
                                             <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
                                                 alt=""
                                                 style="width:36px; height:36px; object-fit:cover; border-radius:50%; display:block;">
@@ -215,7 +211,7 @@
 
                                         <div class="listing-rating card-popup-rainingvis tolt"
                                             data-microtip-position="top"
-                                            data-tooltip="{{ $listing->rating_title ?? 'High Potential' }}"
+                                            data-tooltip="{{ $listing->deal_type ?? 'High Potential' }}"
                                             data-starrating2="{{ $listing->rating ?? 5 }}">
                                         </div>
                                     </div>
@@ -268,7 +264,6 @@
                     // accept either value "for_sale" OR label "Sell Business"
                     if (v === "sell business" || v === "for_sale" || v === "for sale") return "for_sale";
                     if (v === "raise capital" || v === "capital_raise") return "capital_raise";
-                    if (v === "find buyer" || v === "find_buyer") return "find_buyer";
                     if (v === "find partner" || v === "find_partner") return "find_partner";
 
                     return v.replace(/\s+/g, "_");
@@ -450,7 +445,7 @@
                             </div>
                             <div class="half-carousel-content">
                                 <div class="hc-counter color-bg">156 Listings</div>
-                                <h3><a href="#">Technology & Software</a></h3>
+                                <h3>Technology & Software</h3>
                                 <p>SaaS companies, software developers, IT services, and tech startups available for
                                     acquisition</p>
                             </div>
@@ -463,7 +458,7 @@
                             </div>
                             <div class="half-carousel-content">
                                 <div class="hc-counter color-bg">89 Listings</div>
-                                <h3><a href="#">Manufacturing & Engineering</a></h3>
+                                <h3>Manufacturing & Engineering</h3>
                                 <p>Industrial manufacturing, engineering firms, and production facilities with established
                                     operations</p>
                             </div>
@@ -476,7 +471,7 @@
                             </div>
                             <div class="half-carousel-content">
                                 <div class="hc-counter color-bg">102 Listings</div>
-                                <h3><a href="#">Healthcare & Life Sciences</a></h3>
+                                <h3>Healthcare & Life Sciences</h3>
                                 <p>Medical practices, healthcare services, biotech firms, and wellness businesses</p>
                             </div>
                         </div>
@@ -488,7 +483,7 @@
                             </div>
                             <div class="half-carousel-content">
                                 <div class="hc-counter color-bg">74 Listings</div>
-                                <h3><a href="#">Retail & E-commerce</a></h3>
+                                <h3>Retail & E-commerce</h3>
                                 <p>Online stores, retail chains, consumer brands, and distribution businesses</p>
                             </div>
                         </div>
@@ -683,7 +678,7 @@
                     </lineargradient>
                     <path id="wave" stroke="url(#bg)" fill="none"
                         d="M-363.852,502.589c0,0,236.988-41.997,505.475,0
-                                                                                                s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
+                                                                                                                                                s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
                 </defs>
                 <g>
                     <use xlink:href="#wave">
@@ -745,7 +740,8 @@
                                 was unbelievable!"
                             </p>
 
-                            <a href="#" class="testim-link color-bg" style="margin-top:auto;">
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg"
+                                style="margin-top:auto;">
                                 Software Business Owner
                             </a>
                         </div>
@@ -773,7 +769,8 @@
                                 willing to list early-stage opportunities."
                             </p>
 
-                            <a href="#" class="testim-link color-bg" style="margin-top:auto;">
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg"
+                                style="margin-top:auto;">
                                 Investment Director
                             </a>
                         </div>
@@ -829,7 +826,8 @@
                                 Found and acquired an e-commerce business within 6 months."
                             </p>
 
-                            <a href="#" class="testim-link color-bg" style="margin-top:auto;">
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg"
+                                style="margin-top:auto;">
                                 New Business Owner
                             </a>
                         </div>

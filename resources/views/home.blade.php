@@ -26,7 +26,8 @@
     <div class="loader-wrap"></div>
     <div id="main">
         <header class="main-header">
-            <div class="logo-holder"><a href="#"><img src="{{ asset('images/logo.png') }}" alt=""></a>
+            <div class="logo-holder"><a href="{{ route('webite-home') }}"><img src="{{ asset('images/logo.png') }}"
+                        alt=""></a>
             </div>
             <div class="nav-button-wrap color-bg nvminit">
                 <div class="nav-button">
@@ -248,7 +249,6 @@
                                     </p>
                                     <div class="fw_hours fl-wrap">
                                         <span>Global Marketplace: <strong>24/7 Access</strong></span><br>
-                                        <span>Support Available: <strong>Mon-Fri 9am-6pm GMT</strong></span>
                                     </div>
                                 </div>
                             </div>
@@ -278,24 +278,29 @@
                                     <ul class="footer-contacts fl-wrap">
                                         <li>
                                             <span><i class="fas fa-envelope"></i> Support :</span>
-                                            <a href="#">support@mergersales.com</a>
+                                            <a href="{{ route('webite-contact') }}">support@mergersales.com</a>
                                         </li>
                                         <li>
                                             <span><i class="fas fa-globe"></i> Platform :</span>
-                                            <a href="#">Worldwide Access</a>
+                                            <a href="{{ route('webite-business') }}">Worldwide Access</a>
                                         </li>
                                         <li>
                                             <span><i class="fas fa-headset"></i> Help Center :</span>
-                                            <a href="#">help.mergersales.com</a>
+                                            <a href="{{ route('webite-contact') }}">help.mergersales.com</a>
                                         </li>
                                     </ul>
 
                                     <div class="footer-social fl-wrap">
                                         <ul>
-                                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                                            <li><a href="https://www.linkedin.com/company/merger-sales/"><i
+                                                        class="fab fa-linkedin-in"></i></a></li>
+                                            <li><a href="https://x.com/MergerSales"><i class="fab fa-twitter"></i></a>
+                                            </li>
+                                            <li><a href="https://www.facebook.com/share/15xB6mdH4c/?mibextid=wwXIfr"><i
+                                                        class="fab fa-facebook-f"></i></a></li>
+                                            <li><a
+                                                    href="https://www.instagram.com/mergersales?igsh=MXI1MjVyMWozem42ZA%3D%3D&utm_source=qr"><i
+                                                        class="fa-brands fa-instagram"></i></a></li>
                                         </ul>
                                     </div>
                                 </div>

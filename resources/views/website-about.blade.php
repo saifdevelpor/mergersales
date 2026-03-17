@@ -27,7 +27,7 @@
                         <h4>100% Confidential <span>01</span></h4>
                         <p>Businesses are listed anonymously. No company names, no exposure, only essential details to
                             maintain complete privacy throughout the process.</p>
-                        <a href="#" class="serv-link">Learn More</a>
+                        {{-- <a href="#" class="serv-link">Learn More</a> --}}
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -36,7 +36,7 @@
                         <h4>Completely Free <span>02</span></h4>
                         <p>No listing fees, no commissions, no subscriptions. Join, browse, and connect with buyers/sellers
                             without any cost barriers or hidden charges.</p>
-                        <a href="#" class="serv-link">Learn More</a>
+                        {{-- <a href="#" class="serv-link">Learn More</a> --}}
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -45,7 +45,7 @@
                         <h4>Global Reach <span>03</span></h4>
                         <p>Access businesses from around the world across all industries. Connect with international buyers
                             and sellers in a seamless, borderless marketplace.</p>
-                        <a href="#" class="serv-link">Learn More</a>
+                        {{-- <a href="#" class="serv-link">Learn More</a> --}}
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                             looking to sell, acquire, raise capital, or find partners, Mergersales provides the tools and
                             network to make it happen securely.
                         </p>
-                        <a href="#" class="btn small-btn float-btn color-bg">How It Works</a>
+                        <a href="{{ route('webite-business') }}" class="btn small-btn float-btn color-bg">How It Works</a>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-6">
@@ -193,10 +193,10 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="#" target="_blank"><i class="fab fa-shield-alt"></i></a></li>
-                                <li><a href="#" target="_blank"><i class="fab fa-keycdn"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-shield-alt"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-keycdn"></i></a></li>
                             </ul>
-                            <a href="#" class="tolt tf-btn" data-microtip-position="top-right"
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
                                 data-tooltip="Security Features"><i class="fal fa-lock"></i></a>
                         </div>
                     </div>
@@ -214,11 +214,11 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="#" target="_blank"><i class="fab fa-accessible-icon"></i></a></li>
-                                <li><a href="#" target="_blank"><i class="fab fa-creative-commons-zero"></i></a>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-accessible-icon"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-creative-commons-zero"></i></a>
                                 </li>
                             </ul>
-                            <a href="#" class="tolt tf-btn" data-microtip-position="top-right"
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
                                 data-tooltip="Free Platform"><i class="fal fa-hand-holding-usd"></i></a>
                         </div>
                     </div>
@@ -236,10 +236,10 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="#" target="_blank"><i class="fab fa-globe"></i></a></li>
-                                <li><a href="#" target="_blank"><i class="fab fa-connectdevelop"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-globe"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-connectdevelop"></i></a></li>
                             </ul>
-                            <a href="#" class="tolt tf-btn" data-microtip-position="top-right"
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
                                 data-tooltip="Global Network"><i class="fal fa-network-wired"></i></a>
                         </div>
                     </div>
@@ -284,7 +284,7 @@
                             <p> "Mergersales allowed me to confidentially sell my SaaS business without exposing my identity
                                 to competitors. Found a serious buyer within 3 weeks, and the platform being completely free
                                 was unbelievable!"</p>
-                            <a href="#" class="testim-link color-bg">Software Business Owner</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Software Business Owner</a>
                         </div>
                     </div>
                 </div>
@@ -299,7 +299,7 @@
                             <p> "As a PE firm, we're always looking for quality deals. Mergersales gave us access to
                                 businesses we wouldn't have found otherwise. The anonymous listings mean sellers are more
                                 willing to list early-stage opportunities."</p>
-                            <a href="#" class="testim-link color-bg">Investment Director</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Investment Director</a>
                         </div>
                     </div>
                 </div>
@@ -314,7 +314,7 @@
                             <p> "After 25 years running my manufacturing business, I wanted to retire without employees or
                                 competitors knowing. Mergersales kept everything confidential while connecting me with 8
                                 serious buyers. The deal closed in 4 months."</p>
-                            <a href="#" class="testim-link color-bg">Industrial Business Seller</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Industrial Business Seller</a>
                         </div>
                     </div>
                 </div>
@@ -329,7 +329,7 @@
                             <p> "Looking to buy my first business was overwhelming. Mergersales made it simple - no fees,
                                 straightforward listings, and the confidential approach meant sellers were more transparent.
                                 Found and acquired an e-commerce business within 6 months."</p>
-                            <a href="#" class="testim-link color-bg">New Business Owner</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">New Business Owner</a>
                         </div>
                     </div>
                 </div>

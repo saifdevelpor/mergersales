@@ -26,7 +26,7 @@
                         <i class="fal fa-headset"></i>
                         <h4>Platform Support <span>01</span></h4>
                         <p>Get assistance with listings, inquiries, and platform features.</p>
-                        <a href="#" class="serv-link sl-b">support@mergersales.com</a>
+                        <a href="support@mergersales.com" class="serv-link sl-b">support@mergersales.com</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -34,7 +34,7 @@
                         <i class="fal fa-comments-alt"></i>
                         <h4>Business Inquiries<span>02</span></h4>
                         <p>Questions about listing your business or acquisition strategies.</p>
-                        <a href="#" class="serv-link sl-b">inquiries@mergersales.com</a>
+                        <a href="{{ route('webite-business') }}" class="serv-link sl-b">inquiries@mergersales.com</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -42,7 +42,7 @@
                         <i class="fal fa-globe-americas"></i>
                         <h4>Global Platform <span>03</span></h4>
                         <p>Access our worldwide marketplace from anywhere.</p>
-                        <a href="#" class="serv-link sl-b">Available 24/7 Worldwide</a>
+                        <a href="{{ route('webite-contact') }}" class="serv-link sl-b">Available 24/7 Worldwide</a>
                     </div>
                 </div>
             </div>
@@ -51,10 +51,10 @@
                 <div class="contact-social">
                     <span class="cs-title">Connect with us: </span>
                     <ul>
-                        <li><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                        <li><a href="https://www.linkedin.com/company/merger-sales/" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="https://x.com/MergerSales" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="https://www.facebook.com/share/15xB6mdH4c/?mibextid=wwXIfr" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="https://www.instagram.com/mergersales?igsh=MXI1MjVyMWozem42ZA%3D%3D&utm_source=qr" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
                     </ul>
                 </div>
             </div>

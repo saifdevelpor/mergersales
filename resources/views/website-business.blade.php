@@ -49,8 +49,6 @@
                                         <option value="Raise capital"
                                             {{ request('deal_type') == 'Raise capital' ? 'selected' : '' }}>Raise Capital
                                         </option>
-                                        <option value="Find buyer"
-                                            {{ request('deal_type') == 'Find buyer' ? 'selected' : '' }}>Find Buyer</option>
                                         <option value="Find partner"
                                             {{ request('deal_type') == 'Find partner' ? 'selected' : '' }}>Find Partner
                                         </option>
@@ -311,7 +309,7 @@
 
                                         <div class="geodir-category-footer fl-wrap"
                                             style="margin-top:auto; padding-top:12px;">
-                                            <a href="#" class="gcf-company">
+                                            <a href="{{ $singleUrl }}" class="gcf-company">
                                                 <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
                                                     alt=""
                                                     style="width:36px;height:36px;object-fit:cover;border-radius:50%;display:block;">

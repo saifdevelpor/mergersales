@@ -61,7 +61,7 @@
                                     @endphp
 
                                     <div class="post-author">
-                                        <a href="#">
+                                        <a href="{{ route('webite-blog') }}">
                                             <img src="{{ asset($authorImg) }}" alt="{{ $authorName }}">
                                             <span>By {{ $authorName }}</span>
                                         </a>

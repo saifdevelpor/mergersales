@@ -287,7 +287,6 @@
                                     <option value="">Select deal type</option>
                                     <option value="Sell business">Sell business</option>
                                     <option value="Raise capital">Raise capital</option>
-                                    <option value="Find buyer">Find buyer</option>
                                     <option value="Find partner">Find partner</option>
                                 </select>
                             </div>
@@ -424,8 +423,6 @@
                                         <option value="Raise capital"
                                             {{ $listing->deal_type == 'Raise capital' ? 'selected' : '' }}>Raise capital
                                         </option>
-                                        <option value="Find buyer"
-                                            {{ $listing->deal_type == 'Find buyer' ? 'selected' : '' }}>Find buyer</option>
                                         <option value="Find partner"
                                             {{ $listing->deal_type == 'Find partner' ? 'selected' : '' }}>Find partner
                                         </option>
