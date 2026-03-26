@@ -103,10 +103,13 @@ class ListingController extends Controller
                 'ebitda_range'      => 'required|string',
                 'employee_range'    => 'required|string',
                 'description'       => 'required|string',
-                'teaser_path'       => 'nullable|file',
+
+                // 🔥 FIXED FILE VALIDATION
+                'teaser_path' => 'nullable|mimes:pdf,doc,docx|max:5120',
+                'im_path'     => 'nullable|mimes:pdf,doc,docx|max:5120',
+                'business_img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
                 'reson_for_sale'    => 'nullable|string',
-                'im_path'           => 'nullable|file',
-                'business_img'      => 'nullable|mimes:jpg,jpeg,png,webp,pdf',
                 'nda_required'      => 'nullable|boolean',
             ]);
 
@@ -160,23 +163,27 @@ class ListingController extends Controller
         }
     }
 
-
-
     public function update(Request $request, Listing $listing)
     {
         $request->validate([
-            'deal_type'       => 'required|string',
-            'business_name'   => 'required|string',
-            'industry_id'     => 'required|exists:industries,id',
-            'sub_industry_id' => 'required|exists:sub_industries,id',
-            'country'         => 'required|string',
-            'currency'        => 'required|string',
-            'revenue_range'   => 'required|string',
-            'ebitda_range'    => 'required|string',
-            'employee_range'  => 'required|string',
-            'description'     => 'required|string',
-            'business_img'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'nda_required'    => 'nullable|boolean',
+            'deal_type'         => 'required|string',
+            'business_name'     => 'required|string',
+            'industry_id'       => 'required|exists:industries,id',
+            'sub_industry_id'   => 'required|exists:sub_industries,id',
+            'country'           => 'required|string',
+            'currency'          => 'required|string',
+            'revenue_range'     => 'required|string',
+            'ebitda_range'      => 'required|string',
+            'employee_range'    => 'required|string',
+            'description'       => 'required|string',
+
+            // 🔥 FIXED FILE VALIDATION
+            'teaser_path' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            'im_path'     => 'nullable|mimes:pdf,doc,docx|max:5120',
+            'business_img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            'reson_for_sale'    => 'nullable|string',
+            'nda_required'      => 'nullable|boolean',
         ]);
 
         $data = $request->all();
@@ -206,8 +213,6 @@ class ListingController extends Controller
             ->route('listings.approved')
             ->with('success', 'Listing updated successfully!');
     }
-
-
 
     public function destroy(Listing $listing)
     {

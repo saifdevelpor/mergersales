@@ -138,9 +138,21 @@
                         </li>
                     @endif
                     @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
+                        <li class="menu-header small text-uppercase">
+                            <span class="menu-header-text text-muted">Blog</span>
+                        </li>
+
                         <li class="menu-item {{ request()->routeIs('blogs.index') ? 'active' : '' }}">
                             <a href="{{ route('blogs.index') }}" class="menu-link">
                                 <div data-i18n="Blog">Blog</div>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
+                        <li class="menu-item {{ request()->routeIs('admin.tickets') ? 'active' : '' }}">
+                            <a href="{{ route('admin.tickets') }}" class="menu-link">
+                                <div data-i18n="Support Tickets">Support Tickets</div>
                             </a>
                         </li>
                     @endif

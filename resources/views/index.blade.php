@@ -99,7 +99,7 @@
             <div class="clearfix"></div>
 
             <div class="grid-item-holder gallery-items gisp fl-wrap" id="listingContainer">
-                @foreach ($listings as $listing)
+                @forelse ($listings as $listing)
                     @php
                         // deal class normalize
                         $dealClass = strtolower(str_replace(' ', '_', $listing->deal_type ?? 'for_sale'));
@@ -133,7 +133,7 @@
                                     style="height:220px; overflow:hidden; position:relative;">
                                     <a href="{{ route('business.single', $listing->id) }}" class="geodir-category-img_item"
                                         style="display:block; width:100%; height:100%;">
-                                        <img src="{{ $listing->business_img ? 'storage/app/public/' . $listing->business_img : asset('images/1.jpg') }}"
+                                        <img src="{{ $listing->business_img ? 'https://mergersales.com/storage/app/public/' . $listing->business_img : asset('images/1.jpg') }}"
                                             alt=""
                                             style="width:100%; height:100%; object-fit:cover; display:block;">
                                         <div class="overlay"></div>
@@ -157,14 +157,14 @@
                                     </ul>
 
                                     {{-- <a href="#" class="geodir_save-btn tolt" data-microtip-position="left"
-                                        data-tooltip="Save Listing">
-                                        <span><i class="fal fa-heart"></i></span>
-                                    </a>
+                            data-tooltip="Save Listing">
+                            <span><i class="fal fa-heart"></i></span>
+                        </a>
 
-                                    <a href="#" class="compare-btn tolt" data-microtip-position="left"
-                                        data-tooltip="Compare">
-                                        <span><i class="fal fa-random"></i></span>
-                                    </a> --}}
+                        <a href="#" class="compare-btn tolt" data-microtip-position="left"
+                            data-tooltip="Compare">
+                            <span><i class="fal fa-random"></i></span>
+                        </a> --}}
 
                                     <div class="geodir-category-listing_media-list">
                                         <span>
@@ -180,48 +180,54 @@
                                             href="{{ route('business.single', $listing->id) }}">{{ $listing->business_name }}</a>
                                     </h3>
 
-                                    <div class="geodir-category-content_price">
-                                        {{ $listing->ebitda_range ?? '$0' }}
-                                    </div>
+                                    {{-- <div class="geodir-category-content_price">
+                            {{ $listing->ebitda_range ?? '$0' }}
+                        </div> --}}
 
                                     <p
                                         style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px;">
                                         {{ $listing->description }}
                                     </p>
 
-                                    <div class="geodir-category-content-details">
-                                        <ul>
-                                            <li><i class="fal fa-dollar-sign"></i> <span>Revenue:
-                                                    {{ $listing->revenue_range ?? 'N/A' }}</span></li>
-                                            <li><i class="fal fa-chart-bar"></i> <span>EBITDA:
-                                                    {{ $listing->ebitda_range ?? 'N/A' }}</span></li>
-                                            <li><i class="fal fa-users"></i> <span>Team:
-                                                    {{ $listing->employee_range ?? 'N/A' }}</span></li>
-                                        </ul>
-                                    </div>
+                                    {{-- <div class="geodir-category-content-details">
+                            <ul>
+                                <li><i class="fal fa-dollar-sign"></i> <span>Revenue:
+                                        {{ $listing->revenue_range ?? 'N/A' }}</span></li>
+                                <li><i class="fal fa-chart-bar"></i> <span>EBITDA:
+                                        {{ $listing->ebitda_range ?? 'N/A' }}</span></li>
+                                <li><i class="fal fa-users"></i> <span>Team:
+                                        {{ $listing->employee_range ?? 'N/A' }}</span></li>
+                            </ul>
+                        </div> --}}
 
-                                    <div class="geodir-category-footer fl-wrap" style="margin-top:auto;">
-                                        <a href="{{ route('business.single', $listing->id) }}" class="gcf-company">
-                                            <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
-                                                alt=""
-                                                style="width:36px; height:36px; object-fit:cover; border-radius:50%; display:block;">
+                                    {{-- <div class="geodir-category-footer fl-wrap" style="margin-top:auto;">
+                            <a href="{{ route('business.single', $listing->id) }}" class="gcf-company">
+                                <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
+                                    alt=""
+                                    style="width:36px; height:36px; object-fit:cover; border-radius:50%; display:block;">
 
-                                            <span>{{ $listing->user->name ?? 'Anonymous Seller' }}</span>
-                                        </a>
+                                <span>{{ $listing->user->name ?? 'Anonymous Seller' }}</span>
+                            </a>
 
-                                        <div class="listing-rating card-popup-rainingvis tolt"
-                                            data-microtip-position="top"
-                                            data-tooltip="{{ $listing->deal_type ?? 'High Potential' }}"
-                                            data-starrating2="{{ $listing->rating ?? 5 }}">
-                                        </div>
-                                    </div>
+                            <div class="listing-rating card-popup-rainingvis tolt"
+                                data-microtip-position="top"
+                                data-tooltip="{{ $listing->deal_type ?? 'High Potential' }}"
+                                data-starrating2="{{ $listing->rating ?? 5 }}">
+                            </div>
+                        </div> --}}
 
                                 </div>
 
                             </article>
                         </div>
+
                     </div>
-                @endforeach
+
+                @empty
+                    <div class="col-12 text-center p-5">
+                        <h4>No Latest Business Available</h4>
+                    </div>
+                @endforelse
             </div>
 
             <a href="{{ url('website-business') }}" class="btn float-btn small-btn color-bg">View All Businesses</a>
@@ -503,7 +509,7 @@
             <div class="listing-carousel-wrapper lc_hero carousel-wrap fl-wrap">
                 <div class="listing-carousel carousel">
 
-                    @foreach ($blogs as $blog)
+                    @forelse ($blogs as $blog)
                         <div class="slick-slide-item">
                             <div class="listing-item" style="height:100%; display:flex; flex-direction:column;">
                                 <article class="geodir-category-listing fl-wrap"
@@ -568,10 +574,10 @@
                                         {{-- Description 3 lines --}}
                                         <p
                                             style="
-                                        display:-webkit-box;
-                                        -webkit-line-clamp:3;
-                                        -webkit-box-orient:vertical;
-                                        overflow:hidden;">
+                        display:-webkit-box;
+                        -webkit-line-clamp:3;
+                        -webkit-box-orient:vertical;
+                        overflow:hidden;">
                                             {{ \Illuminate\Support\Str::limit(strip_tags($blog->content ?? ($blog->description ?? '')), 140) }}
                                         </p>
 
@@ -592,17 +598,18 @@
                                 </article>
                             </div>
                         </div>
-                    @endforeach
-
+                    @empty
+                        <div class="col-12 text-center p-5">
+                            <h4>No Latest Blogs Available</h4>
+                        </div>
+                    @endforelse
                 </div>
-
                 <div class="swiper-button-prev lc-wbtn lc-wbtn_prev"><i class="far fa-angle-left"></i></div>
                 <div class="swiper-button-next lc-wbtn lc-wbtn_next"><i class="far fa-angle-right"></i></div>
 
             </div>
         </div>
     </section>
-
 
     <section class="color-bg small-padding">
         <div class="container">
@@ -678,7 +685,7 @@
                     </lineargradient>
                     <path id="wave" stroke="url(#bg)" fill="none"
                         d="M-363.852,502.589c0,0,236.988-41.997,505.475,0
-                                                                                                                                                s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
+                                                                                                                                                                                                                                                                                                                                                                s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
                 </defs>
                 <g>
                     <use xlink:href="#wave">

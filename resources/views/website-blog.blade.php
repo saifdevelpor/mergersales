@@ -163,7 +163,7 @@
                                         @foreach ($latestListings as $l)
                                             @php
                                                 $img = $l->business_img
-                                                    ? 'storage/app/public/' . ltrim($l->business_img, '/')
+                                                    ? 'https://mergersales.com/storage/app/public/' . ltrim($l->business_img, '/')
                                                     : asset('images/1.jpg');
 
                                                 $singleUrl = route('business.single', $l->id);

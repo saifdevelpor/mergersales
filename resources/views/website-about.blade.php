@@ -92,48 +92,66 @@
     <section class="color-bg small-padding">
         <div class="container">
             <div class="main-facts fl-wrap">
+
+                {{-- Businesses Listed --}}
                 <div class="inline-facts-wrap">
                     <div class="inline-facts">
                         <div class="milestone-counter">
                             <div class="stats animaper">
-                                <div class="num" data-content="0" data-num="1256">0</div>
+                                <div class="num" data-content="0" data-num="{{ $businessCount ?? 0 }}">
+                                    {{ $businessCount ?? 0 }}
+                                </div>
                             </div>
                         </div>
                         <h6>Businesses Listed</h6>
                     </div>
                 </div>
+
+                {{-- Verified Buyers --}}
                 <div class="inline-facts-wrap">
                     <div class="inline-facts">
                         <div class="milestone-counter">
                             <div class="stats animaper">
-                                <div class="num" data-content="0" data-num="5890">0</div>
+                                <div class="num" data-content="0" data-num="{{ $buyerCount ?? 0 }}">
+                                    {{ $buyerCount ?? 0 }}
+                                </div>
                             </div>
                         </div>
                         <h6>Verified Buyers</h6>
                     </div>
                 </div>
+
+                {{-- Deals Completed --}}
                 <div class="inline-facts-wrap">
                     <div class="inline-facts">
                         <div class="milestone-counter">
                             <div class="stats animaper">
-                                <div class="num" data-content="0" data-num="245">0</div>
+                                <div class="num" data-content="0" data-num="{{ $dealCount ?? 0 }}">
+                                    {{ $dealCount ?? 0 }}
+                                </div>
                             </div>
                         </div>
                         <h6>Deals Completed</h6>
                     </div>
                 </div>
+
+                {{-- Countries Covered --}}
                 <div class="inline-facts-wrap">
                     <div class="inline-facts">
                         <div class="milestone-counter">
                             <div class="stats animaper">
-                                <div class="num" data-content="0" data-num="85">0</div>
+                                <div class="num" data-content="0" data-num="{{ $countryCount ?? 0 }}">
+                                    {{ $countryCount ?? 0 }}
+                                </div>
                             </div>
                         </div>
                         <h6>Countries Covered</h6>
                     </div>
                 </div>
+
             </div>
         </div>
+
         <div class="svg-bg">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                 y="0px" width="100%" height="100%" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
@@ -145,7 +163,7 @@
                     </lineargradient>
                     <path id="wave" stroke="url(#bg)" fill="none"
                         d="M-363.852,502.589c0,0,236.988-41.997,505.475,0
-                                    s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
+                                                                                                                                                            s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
                 </defs>
                 <g>
                     <use xlink:href="#wave">
@@ -193,11 +211,14 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-shield-alt"></i></a></li>
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-keycdn"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-shield-alt"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-keycdn"></i></a></li>
                             </ul>
-                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
-                                data-tooltip="Security Features"><i class="fal fa-lock"></i></a>
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn"
+                                data-microtip-position="top-right" data-tooltip="Security Features"><i
+                                    class="fal fa-lock"></i></a>
                         </div>
                     </div>
                 </div>
@@ -214,12 +235,15 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-accessible-icon"></i></a></li>
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-creative-commons-zero"></i></a>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-accessible-icon"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-creative-commons-zero"></i></a>
                                 </li>
                             </ul>
-                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
-                                data-tooltip="Free Platform"><i class="fal fa-hand-holding-usd"></i></a>
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn"
+                                data-microtip-position="top-right" data-tooltip="Free Platform"><i
+                                    class="fal fa-hand-holding-usd"></i></a>
                         </div>
                     </div>
                 </div>
@@ -236,11 +260,14 @@
                         </div>
                         <div class="team-footer fl-wrap">
                             <ul class="team-social">
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-globe"></i></a></li>
-                                <li><a href="{{ route('webite-business') }}" target="_blank"><i class="fab fa-connectdevelop"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-globe"></i></a></li>
+                                <li><a href="{{ route('webite-business') }}" target="_blank"><i
+                                            class="fab fa-connectdevelop"></i></a></li>
                             </ul>
-                            <a href="{{ route('webite-business') }}" class="tolt tf-btn" data-microtip-position="top-right"
-                                data-tooltip="Global Network"><i class="fal fa-network-wired"></i></a>
+                            <a href="{{ route('webite-business') }}" class="tolt tf-btn"
+                                data-microtip-position="top-right" data-tooltip="Global Network"><i
+                                    class="fal fa-network-wired"></i></a>
                         </div>
                     </div>
                 </div>
@@ -284,7 +311,8 @@
                             <p> "Mergersales allowed me to confidentially sell my SaaS business without exposing my identity
                                 to competitors. Found a serious buyer within 3 weeks, and the platform being completely free
                                 was unbelievable!"</p>
-                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Software Business Owner</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Software Business
+                                Owner</a>
                         </div>
                     </div>
                 </div>
@@ -314,7 +342,8 @@
                             <p> "After 25 years running my manufacturing business, I wanted to retire without employees or
                                 competitors knowing. Mergersales kept everything confidential while connecting me with 8
                                 serious buyers. The deal closed in 4 months."</p>
-                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Industrial Business Seller</a>
+                            <a href="{{ route('webite-business') }}" class="testim-link color-bg">Industrial Business
+                                Seller</a>
                         </div>
                     </div>
                 </div>

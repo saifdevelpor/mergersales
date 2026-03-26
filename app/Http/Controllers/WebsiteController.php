@@ -130,7 +130,15 @@ class WebsiteController extends Controller
 
     public function website_about()
     {
-        return view('website-about');
+        $businessCount = Listing::where('status', 'Approved')->count();
+        $buyerCount = User::where('role', 'Buyer')->count();
+        $dealCount = Enquiry::where('status', 'approved')->count();
+
+        // 4. Countries Covered (distinct countries in listings)
+        $countryCount = Listing::whereNotNull('country')
+            ->distinct()
+            ->count('country');
+        return view('website-about', compact('businessCount', 'buyercount', 'dealCount', 'countryCount'));
     }
 
     public function website_contact()

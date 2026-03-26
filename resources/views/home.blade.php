@@ -260,11 +260,11 @@
                                         <h4>Quick Links</h4>
                                     </div>
                                     <ul class="footer-list fl-wrap">
-                                        <li><a href="{{ url('home') }}">Home</a></li>
-                                        <li><a href="{{ url('website-about') }}">About</a></li>
-                                        <li><a href="{{ url('website-business') }}">Business</a></li>
-                                        <li><a href="{{ url('website-blog') }}">Blog</a></li>
-                                        <li><a href="{{ url('website-contact') }}">Contact Us</a></li>
+                                        <li><a href="{{ url('/') }}">Home</a></li>
+                                        <li><a href="{{ url('About-Us') }}">About</a></li>
+                                        <li><a href="{{ url('Business') }}">Business</a></li>
+                                        <li><a href="{{ url('Blog') }}">Blog</a></li>
+                                        <li><a href="{{ url('Contact-Us') }}">Contact Us</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -276,20 +276,13 @@
                                         <h4>Contact Info</h4>
                                     </div>
                                     <ul class="footer-contacts fl-wrap">
-                                        <li>
-                                            <span><i class="fas fa-envelope"></i> Support :</span>
-                                            <a href="{{ route('webite-contact') }}">support@mergersales.com</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fas fa-globe"></i> Platform :</span>
-                                            <a href="{{ route('webite-business') }}">Worldwide Access</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fas fa-headset"></i> Help Center :</span>
-                                            <a href="{{ route('webite-contact') }}">help.mergersales.com</a>
-                                        </li>
+                                        <li> <span><i class="fas fa-envelope"></i> Support :</span> <a
+                                                href="{{ route('webite-contact') }}">support@mergersales.com</a> </li>
+                                        <li> <span><i class="fas fa-globe"></i> Platform :</span> <a
+                                                href="{{ route('webite-business') }}">Worldwide Access</a> </li>
+                                        <li> <span><i class="fas fa-headset"></i> Help Center :</span> <a
+                                                href="{{ route('webite-contact') }}">help.mergersales.com</a> </li>
                                     </ul>
-
                                     <div class="footer-social fl-wrap">
                                         <ul>
                                             <li><a href="https://www.linkedin.com/company/merger-sales/"><i

@@ -76,26 +76,43 @@
                                     </div>
                                 </div>
 
-                                {{-- Revenue Range (UI only; controller cast only if numeric) --}}
+                                {{-- Revenue Range --}}
                                 <div class="listsearch-input-item">
                                     <div class="price-rage-item fl-wrap">
                                         <span class="pr_title">Revenue Range:</span>
                                         <input type="text" class="price-range-double" data-min="10000"
-                                            data-max="10000000" data-step="10000" name="revenue_range_ui"
-                                            value="{{ request('revenue_range_ui') }}" data-prefix="€">
+                                            data-max="100000000" data-step="10000" name="revenue_range_ui"
+                                            value="{{ request('revenue_range_ui') }}" data-prefix="€" data-max-text="+">
                                     </div>
                                 </div>
 
-                                {{-- EBITDA Range (UI only; controller cast only if numeric) --}}
+                                {{-- EBITDA Range --}}
                                 <div class="listsearch-input-item">
                                     <div class="price-rage-item fl-wrap">
                                         <span class="pr_title">EBITDA Range:</span>
-                                        <input type="text" class="price-range-double" data-min="0" data-max="5000000"
+                                        <input type="text" class="price-range-double" data-min="0" data-max="100000000"
                                             data-step="10000" name="ebitda_range_ui"
-                                            value="{{ request('ebitda_range_ui') }}" data-prefix="€">
+                                            value="{{ request('ebitda_range_ui') }}" data-prefix="€" data-max-text="+">
                                     </div>
                                 </div>
-
+                                <script>
+                                    $(".price-range-double").ionRangeSlider({
+                                        type: "double",
+                                        min: 0,
+                                        max: 100000000,
+                                        from: 10000,
+                                        to: 50000000,
+                                        step: 10000,
+                                        prefix: "€",
+                                        prettify_enabled: true,
+                                        prettify: function(num) {
+                                            if (num >= 100000000) return "100M+";
+                                            if (num >= 1000000) return (num / 1000000) + "M";
+                                            if (num >= 1000) return (num / 1000) + "K";
+                                            return num;
+                                        }
+                                    });
+                                </script>
                                 {{-- Employee + Country --}}
                                 <div class="listsearch-input-item">
                                     <div class="row">
@@ -183,6 +200,19 @@
 
                     </div>
                 </div>
+                <style>
+                    /* Chosen dropdown ko upar lao */
+                    .chosen-container {
+                        z-index: 9999 !important;
+                        position: relative;
+                    }
+
+                    /* Back button ko neeche rakho */
+                    .back-tofilters {
+                        z-index: 1 !important;
+                        position: relative;
+                    }
+                </style>
 
                 {{-- ================= RIGHT LISTINGS ================= --}}
                 <div class="col-md-8">
@@ -205,12 +235,13 @@
                     </div>
 
                     {{-- LISTINGS --}}
-                    <div class="listing-item-container box-list_ic fl-wrap" style="display:flex; flex-wrap:wrap; gap:20px;">
+                    <div class="listing-item-container box-list_ic fl-wrap"
+                        style="display:flex; flex-wrap:wrap; gap:20px;">
 
                         @forelse ($listings as $listing)
                             @php
                                 $img = $listing->business_img
-                                    ? 'storage/app/public/' . ltrim($listing->business_img, '/')
+                                    ? 'https://mergersales.com/storage/app/public/' . ltrim($listing->business_img, '/')
                                     : asset('images/1.jpg');
 
                                 $singleUrl = route('business.single', $listing->id);
@@ -245,7 +276,7 @@
     ">
 
                                             <!-- LEFT SIDE -->
-                                            <span
+                                            {{-- <span
                                                 style="
             display:inline-flex;
             align-items:center;
@@ -259,10 +290,10 @@
         ">
                                                 <i class="fas fa-briefcase" style="font-size:12px;"></i>
                                                 {{ $listing->deal_type ?? 'Latest' }}
-                                            </span>
+                                            </span> --}}
 
                                             <!-- RIGHT SIDE -->
-                                            <span
+                                            {{-- <span
                                                 style="
             display:inline-flex;
             align-items:center;
@@ -276,7 +307,7 @@
         ">
                                                 <i class="fas fa-map-marker-alt" style="font-size:12px;"></i>
                                                 {{ $listing->country ?? 'N/A' }}
-                                            </span>
+                                            </span> --}}
 
                                         </div>
 
@@ -289,25 +320,25 @@
                                             <a href="{{ $singleUrl }}">{{ $listing->business_name }}</a>
                                         </h3>
 
-                                        <div class="geodir-category-content_price" style="font-weight:600;margin:8px 0;">
+                                        {{-- <div class="geodir-category-content_price" style="font-weight:600;margin:8px 0;">
                                             {{ $listing->ebitda_range ?? 'Confidential' }}
-                                        </div>
+                                        </div> --}}
 
                                         <p
                                             style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:44px;margin-bottom:12px;color:#555;">
                                             {{ $listing->description ?? 'No Description Available' }}
                                         </p>
 
-                                        <div class="geodir-category-content-details">
+                                        {{-- <div class="geodir-category-content-details">
                                             <ul>
                                                 <li><i class="fal fa-dollar-sign"></i><span>Revenue:
                                                         {{ $listing->revenue_range ?? 'N/A' }}</span></li>
                                                 <li><i class="fal fa-users"></i><span>Team:
                                                         {{ $listing->employee_range ?? 'N/A' }}</span></li>
                                             </ul>
-                                        </div>
+                                        </div> --}}
 
-                                        <div class="geodir-category-footer fl-wrap"
+                                        {{-- <div class="geodir-category-footer fl-wrap"
                                             style="margin-top:auto; padding-top:12px;">
                                             <a href="{{ $singleUrl }}" class="gcf-company">
                                                 <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
@@ -315,7 +346,7 @@
                                                     style="width:36px;height:36px;object-fit:cover;border-radius:50%;display:block;">
                                                 <span>{{ $listing->user->name ?? 'Anonymous Seller' }}</span>
                                             </a>
-                                        </div>
+                                        </div> --}}
 
                                     </div>
                                 </article>

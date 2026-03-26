@@ -50,14 +50,45 @@
             <div class="contacts-opt fl-wrap">
                 <div class="contact-social">
                     <span class="cs-title">Connect with us: </span>
-                    <ul>
-                        <li><a href="https://www.linkedin.com/company/merger-sales/" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                    <ul class="social-grid">
+                        <li><a href="https://www.linkedin.com/company/merger-sales/" target="_blank"><i
+                                    class="fab fa-linkedin-in"></i></a></li>
                         <li><a href="https://x.com/MergerSales" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="https://www.facebook.com/share/15xB6mdH4c/?mibextid=wwXIfr" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="https://www.instagram.com/mergersales?igsh=MXI1MjVyMWozem42ZA%3D%3D&utm_source=qr" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="https://www.facebook.com/share/15xB6mdH4c/?mibextid=wwXIfr" target="_blank"><i
+                                    class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="https://www.instagram.com/mergersales" target="_blank"><i
+                                    class="fa-brands fa-instagram"></i></a></li>
                     </ul>
                 </div>
             </div>
+            <style>
+                .social-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    /* 2 columns */
+                    gap: 10px;
+                    padding: 0;
+                    list-style: none;
+                }
+
+                .social-grid li a {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 60px;
+                    background: #CCAA57;
+                    /* aapka theme color */
+                    color: #fff;
+                    font-size: 20px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    transition: 0.3s;
+                }
+
+                .social-grid li a:hover {
+                    background: #333;
+                }
+            </style>
         </div>
     </section>
 @endsection
