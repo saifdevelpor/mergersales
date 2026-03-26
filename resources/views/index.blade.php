@@ -99,6 +99,9 @@
             <div class="clearfix"></div>
 
             <div class="grid-item-holder gallery-items gisp fl-wrap" id="listingContainer">
+                <div id="noDealTypeResultMessage" class="col-12 text-center p-5" style="display:none;">
+                    <h4>No Business available in this deal type</h4>
+                </div>
                 @forelse ($listings as $listing)
                     @php
                         // deal class normalize
@@ -133,7 +136,7 @@
                                     style="height:220px; overflow:hidden; position:relative;">
                                     <a href="{{ route('business.single', $listing->id) }}" class="geodir-category-img_item"
                                         style="display:block; width:100%; height:100%;">
-                                        <img src="{{ $listing->business_img ? 'https://mergersales.com/storage/app/public/' . $listing->business_img : asset('images/1.jpg') }}"
+                                        <img src="{{ $listing->business_img ? asset('storage/' . $listing->business_img) : asset('assets/images/1.jpg') }}"
                                             alt=""
                                             style="width:100%; height:100%; object-fit:cover; display:block;">
                                         <div class="overlay"></div>
@@ -185,9 +188,11 @@
                         </div> --}}
 
                                     <p
-                                        style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px;">
-                                        {{ $listing->description }}
+                                        style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;color:#555;">
+                                        {{ $listing->description ?? 'No Description Available' }}
                                     </p>
+
+                                    <a href="{{ route('business.single', $listing->id) }}">Read More</a>
 
                                     {{-- <div class="geodir-category-content-details">
                             <ul>
@@ -285,6 +290,7 @@
                 function applyFilters(fromLinkFilter = null) {
                     const keyword = keywordInput ? normalize(keywordInput.value) : "";
                     const industryVal = indSelect ? normalize(indSelect.value) : "all industries";
+                    const emptyMsg = document.getElementById("noDealTypeResultMessage");
 
                     // deal class: link se ya dropdown se
                     let dealClass = "*";
@@ -320,6 +326,12 @@
                     hidden.forEach(el => el.style.display = "none");
                     matched.forEach(el => el.style.display = "");
 
+                    // ✅ empty state for deal-type filter
+                    if (emptyMsg) {
+                        const onlyDealFilterActive = (dealClass !== "*") && !keyword && (!industryVal || industryVal === "all industries");
+                        emptyMsg.style.display = (onlyDealFilterActive && matched.length === 0) ? "" : "none";
+                    }
+
                     // ✅ move matched on top (clean + stable)
                     if (matched.length) {
                         // keep original relative order
@@ -340,6 +352,7 @@
                     if (noDealFilter && noKeyword && noIndustry) {
                         restoreOriginalOrder();
                         all.forEach(el => el.style.display = "");
+                        if (emptyMsg) emptyMsg.style.display = "none";
                     }
                 }
 
@@ -444,56 +457,74 @@
             </div>
             <div class="half-carousel-conatiner">
                 <div class="half-carousel fl-wrap full-height">
-                    <div class="slick-item">
-                        <div class="half-carousel-item fl-wrap">
-                            <div class="bg-wrap bg-parallax-wrap-gradien">
-                                <div class="bg" data-bg="{{ asset('images/8.jpg') }}"></div>
-                            </div>
-                            <div class="half-carousel-content">
-                                <div class="hc-counter color-bg">156 Listings</div>
-                                <h3>Technology & Software</h3>
-                                <p>SaaS companies, software developers, IT services, and tech startups available for
-                                    acquisition</p>
+                    @php
+                        $industryImages = [
+                            'images/industry/softwear.jpg',
+                            'images/industry/menufactring.jpg',
+                            'images/industry/health.jpg',
+                            'images/industry/ecomerace.jpg',
+                            'images/industry/finance.jpg',
+                            'images/industry/transport.jpg',
+                            'images/industry/food.jpg',
+                            'images/industry/energy.jpg',
+                            'images/industry/media.jpg',
+                            'images/industry/business.jpg',
+                        ];
+                        $industryDescriptions = [
+                            'Financial Services & Investment' =>
+                                'M&A-ready firms in advisory, insurance, and investment services. Discover opportunities with stable client portfolios, recurring revenue, and scalable financial operations.',
+                            'Technology & Software' =>
+                                'Explore software, SaaS, and IT-enabled businesses with strong growth potential. Ideal for buyers seeking recurring revenue, product-led scale, and digital market reach.',
+                            'Industrial, Manufacturing & Engineering' =>
+                                'Browse manufacturing and engineering businesses with proven operations. Find opportunities with established production capacity, B2B contracts, and supply-chain depth.',
+                            'Transportation, Logistics & Supply Chain' =>
+                                'Access logistics and transport businesses supporting regional and global commerce. Evaluate assets with route networks, fulfillment capabilities, and operational efficiency.',
+                            'Healthcare, Pharma & Life Sciences' =>
+                                'Discover healthcare and life sciences opportunities across services and specialized care. Suitable for strategic buyers focused on resilient demand and long-term value.',
+                            'Consumer, Retail & E-commerce' =>
+                                'Find retail and e-commerce businesses with active customer bases. Explore brands with omnichannel presence, repeat purchase behavior, and expansion potential.',
+                            'Food, Beverage & Agriculture' =>
+                                'Review food, beverage, and agriculture ventures across production and distribution. Opportunities include strong local demand, supplier ecosystems, and brand-led growth.',
+                            'Energy, Utilities & Environment' =>
+                                'Identify businesses in energy, utilities, and sustainability-focused services. Compare opportunities tied to infrastructure demand, efficiency solutions, and green transition trends.',
+                            'Media, Entertainment & Creative' =>
+                                'Explore media and creative businesses with engaged audiences and monetization channels. Includes digital content, production, and brand-driven platforms.',
+                            'Professional Services' =>
+                                'Evaluate service firms with repeat clients and dependable cash flows. Common opportunities include consulting, compliance, and specialist advisory businesses.',
+                            'Construction, Property & Facilities' =>
+                                'Browse construction and facilities businesses with active projects and contracts. Suitable for buyers seeking operational scale in infrastructure and property services.',
+                            'Education & Training' =>
+                                'Find education and training providers serving academic and professional markets. Opportunities include scalable delivery models and recurring enrollment pipelines.',
+                            'Government, Public Sector & Non-Profit' =>
+                                'Discover organizations and service providers aligned with public and social impact needs. Explore stable demand models backed by institutional partnerships.',
+                            'Travel, Hospitality & Leisure' =>
+                                'Review hospitality and leisure businesses with strong customer experience focus. Ideal for investors targeting tourism recovery and destination-led growth.',
+                            'Business Services & Misc' =>
+                                'Explore diverse business services opportunities across support and specialist niches. A broad category with flexible acquisition options for strategic expansion.',
+                        ];
+                    @endphp
+
+                    @foreach ($industries as $idx => $industry)
+                        @php
+                            $img = $industryImages[$idx % count($industryImages)];
+                            $count = (int) ($industryListingCounts[$industry->id] ?? 0);
+                            $desc =
+                                $industryDescriptions[$industry->name] ??
+                                "Explore available businesses in {$industry->name}. Connect with relevant buyers and sellers through confidential, sector-focused opportunities.";
+                        @endphp
+                        <div class="slick-item">
+                            <div class="half-carousel-item fl-wrap">
+                                <div class="bg-wrap bg-parallax-wrap-gradien">
+                                    <div class="bg" data-bg="{{ asset($img) }}"></div>
+                                </div>
+                                <div class="half-carousel-content">
+                                    <div class="hc-counter color-bg">{{ $count }} Listings</div>
+                                    <h3>{{ $industry->name }}</h3>
+                                    <p>{{ $desc }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="slick-item">
-                        <div class="half-carousel-item fl-wrap">
-                            <div class="bg-wrap bg-parallax-wrap-gradien">
-                                <div class="bg" data-bg="{{ asset('images/9.jpg') }}"></div>
-                            </div>
-                            <div class="half-carousel-content">
-                                <div class="hc-counter color-bg">89 Listings</div>
-                                <h3>Manufacturing & Engineering</h3>
-                                <p>Industrial manufacturing, engineering firms, and production facilities with established
-                                    operations</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-item">
-                        <div class="half-carousel-item fl-wrap">
-                            <div class="bg-wrap bg-parallax-wrap-gradien">
-                                <div class="bg" data-bg="{{ asset('images/10.jpg') }}"></div>
-                            </div>
-                            <div class="half-carousel-content">
-                                <div class="hc-counter color-bg">102 Listings</div>
-                                <h3>Healthcare & Life Sciences</h3>
-                                <p>Medical practices, healthcare services, biotech firms, and wellness businesses</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-item">
-                        <div class="half-carousel-item fl-wrap">
-                            <div class="bg-wrap bg-parallax-wrap-gradien">
-                                <div class="bg" data-bg="{{ asset('images/11.jpg') }}"></div>
-                            </div>
-                            <div class="half-carousel-content">
-                                <div class="hc-counter color-bg">74 Listings</div>
-                                <h3>Retail & E-commerce</h3>
-                                <p>Online stores, retail chains, consumer brands, and distribution businesses</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -670,7 +701,6 @@
                         <h6>Countries Covered</h6>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -685,7 +715,7 @@
                     </lineargradient>
                     <path id="wave" stroke="url(#bg)" fill="none"
                         d="M-363.852,502.589c0,0,236.988-41.997,505.475,0
-                                                                                                                                                                                                                                                                                                                                                                s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
                 </defs>
                 <g>
                     <use xlink:href="#wave">

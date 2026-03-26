@@ -8,6 +8,7 @@ use App\Models\Industry;
 use App\Models\Listing;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class WebsiteController extends Controller
 {
@@ -26,33 +27,61 @@ class WebsiteController extends Controller
             ->distinct()
             ->count('country');
         $industries = Industry::orderBy('name')->get();
+        $industryListingCounts = Listing::selectRaw('industry_id, COUNT(*) as total')
+            ->whereNotNull('industry_id')
+            ->where('status', 'Approved')
+            ->groupBy('industry_id')
+            ->pluck('total', 'industry_id');
         $blogs = Blog::latest()->take(5)->get();
         $user = User::all();
-        return view('index', compact('listings', 'blogs', 'user', 'industries', 'businessCount', 'buyerCount', 'dealCount', 'countryCount'));
+        return view('index', compact('listings', 'blogs', 'user', 'industries', 'industryListingCounts', 'businessCount', 'buyerCount', 'dealCount', 'countryCount'));
     }
 
     public function website_business(Request $request)
     {
         $industries = Industry::with('subIndustries')->orderBy('name')->get();
-
         $q = Listing::query()
             ->with(['user', 'industry', 'subIndustry'])
             ->where('status', 'Approved')     // ✅ FIX (case matches DB)
             ->orderBy('created_at', 'desc');
 
-        // ✅ Deal Type (match exact enum values in DB)
+        // ✅ Keyword (business name / description)
+        if ($request->filled('keyword')) {
+            $kw = trim((string) $request->keyword);
+            $q->where(function ($qq) use ($kw) {
+                $qq->where('business_name', 'like', '%' . $kw . '%')
+                    ->orWhere('description', 'like', '%' . $kw . '%');
+            });
+        }
+
+        // ✅ Deal Type (normalize Home page values -> DB values)
         if ($request->filled('deal_type')) {
-            $q->where('deal_type', $request->deal_type);
+            $raw = trim((string) $request->deal_type);
+            // UI has mixed casing ("Sell Business") while DB uses ("Sell business")
+            $normalized = match (strtolower($raw)) {
+                'sell business' => 'Sell business',
+                'raise capital' => 'Raise capital',
+                'find partner' => 'Find partner',
+                default => $raw, // already matches DB
+            };
+            $q->where('deal_type', $normalized);
         }
 
         // ✅ Country
         if ($request->filled('country')) {
-            $q->where('country', $request->country);
+            $country = trim((string) $request->country);
+            $countryLower = mb_strtolower($country);
+            $q->where(function ($qq) use ($countryLower) {
+                // exact first, then partial fallback (typo-friendly search behavior)
+                $qq->whereRaw('LOWER(country) = ?', [$countryLower])
+                    ->orWhereRaw('LOWER(country) LIKE ?', ['%' . $countryLower . '%']);
+            });
         }
 
-        // ✅ Industry
-        if ($request->filled('industry_id')) {
-            $q->where('industry_id', (int) $request->industry_id);
+        // ✅ Industry (support both ?industry_id= and Home page ?industry=)
+        $industryId = $request->input('industry_id', $request->input('industry'));
+        if (! empty($industryId)) {
+            $q->where('industry_id', (int) $industryId);
         }
 
         // ✅ Sub Industry
@@ -83,7 +112,7 @@ class WebsiteController extends Controller
     */
 
         // ✅ Sorting
-        switch ($request->sort_by) {
+        switch ($request->input('sort_by')) {
             case 'revenue_desc':
                 $q->orderBy('revenue_range', 'desc'); // string sorting (ok if numeric strings)
                 break;
@@ -95,6 +124,12 @@ class WebsiteController extends Controller
                 break;
             case 'ebitda_asc':
                 $q->orderBy('ebitda_range', 'asc');
+                break;
+            case 'latest':
+                $q->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $q->orderBy('created_at', 'asc');
                 break;
             default:
                 $q->orderBy('created_at', 'desc');
@@ -138,7 +173,7 @@ class WebsiteController extends Controller
         $countryCount = Listing::whereNotNull('country')
             ->distinct()
             ->count('country');
-        return view('website-about', compact('businessCount', 'buyercount', 'dealCount', 'countryCount'));
+        return view('website-about', compact('businessCount', 'buyerCount', 'dealCount', 'countryCount'));
     }
 
     public function website_contact()
@@ -149,7 +184,9 @@ class WebsiteController extends Controller
     public function website_blog()
     {
         $blogs = Blog::latest()->paginate(2);
-        $popularResources = Blog::select('id', 'details', 'image', 'created_at',)
+        // Keep selects compatible with current DB columns.
+        $popularResources = Blog::select('id', 'details', 'image', 'created_at')
+            ->latest()
             ->take(4)
             ->get();
         $latestListings = Listing::latest()->take(3)->get();
@@ -192,7 +229,9 @@ class WebsiteController extends Controller
             ->get();
 
         // Popular Posts (most viewed)
-        $popularPosts = Blog::select('id', 'details', 'image', 'created_at',)->take(4)
+        $popularPosts = Blog::select('id', 'details', 'image', 'created_at')
+            ->latest()
+            ->take(4)
             ->get();
 
         // Archive (month-wise)
@@ -227,5 +266,63 @@ class WebsiteController extends Controller
     public function website_terms_conditions()
     {
         return view('Terms-of-use');
+    }
+
+    public function countriesAutocomplete(Request $request)
+    {
+        $q = trim((string) $request->query('q', ''));
+        if (mb_strlen($q) < 2) {
+            return response()->json(['items' => []]);
+        }
+
+        $apiKey = env('RAPIDAPI_KEY');
+        $apiHost = env('RAPIDAPI_HOST', 'google-map-places.p.rapidapi.com');
+        if (! $apiKey) {
+            return response()->json(['items' => []]);
+        }
+
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-RapidAPI-Key' => $apiKey,
+                    'X-RapidAPI-Host' => $apiHost,
+                ])
+                ->get('https://google-map-places.p.rapidapi.com/maps/api/place/autocomplete/json', [
+                    'input' => $q,
+                    'types' => '(regions)',
+                    'language' => 'en',
+                ]);
+
+            $predictions = (array) data_get($response->json(), 'predictions', []);
+            $countries = [];
+
+            foreach ($predictions as $prediction) {
+                $terms = (array) data_get($prediction, 'terms', []);
+                $lastTerm = end($terms);
+                $country = trim((string) data_get($lastTerm, 'value', ''));
+                if ($country !== '') {
+                    $countries[] = $country;
+                }
+            }
+
+            $countries = array_values(array_unique($countries));
+
+            // Rank by prefix match first, then contains.
+            usort($countries, function ($a, $b) use ($q) {
+                $qLower = mb_strtolower($q);
+                $aLower = mb_strtolower($a);
+                $bLower = mb_strtolower($b);
+                $aScore = str_starts_with($aLower, $qLower) ? 0 : (str_contains($aLower, $qLower) ? 1 : 2);
+                $bScore = str_starts_with($bLower, $qLower) ? 0 : (str_contains($bLower, $qLower) ? 1 : 2);
+                if ($aScore !== $bScore) return $aScore <=> $bScore;
+                return strcmp($a, $b);
+            });
+
+            return response()->json([
+                'items' => array_map(fn($name) => ['name' => $name], $countries),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['items' => []], 200);
+        }
     }
 }

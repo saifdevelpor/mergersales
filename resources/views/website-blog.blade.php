@@ -72,11 +72,55 @@
                                 {{-- Content --}}
                                 <div class="list-single-main-item fl-wrap block_box">
 
-                                    {{-- ✅ TITLE REMOVED --}}
+                                    @php
+                                        // Support both schemas: `description` (migration) or legacy `details`
+                                        $bodyHtml = $blog->description ?? ($blog->details ?? '');
+                                        $decodedBody = html_entity_decode(
+                                            (string) $bodyHtml,
+                                            ENT_QUOTES | ENT_HTML5,
+                                            'UTF-8',
+                                        );
+
+                                        // Remove full-document wrappers/styles often pasted from editors
+                                        $cleanBodyHtml = preg_replace('/<!doctype[^>]*>/i', '', $decodedBody);
+                                        $cleanBodyHtml = preg_replace(
+                                            '#<head\b[^>]*>.*?</head>#is',
+                                            '',
+                                            (string) $cleanBodyHtml,
+                                        );
+                                        $cleanBodyHtml = preg_replace(
+                                            '#<style\b[^>]*>.*?</style>#is',
+                                            '',
+                                            (string) $cleanBodyHtml,
+                                        );
+                                        $cleanBodyHtml = preg_replace(
+                                            '#<script\b[^>]*>.*?</script>#is',
+                                            '',
+                                            (string) $cleanBodyHtml,
+                                        );
+                                        $cleanBodyHtml = preg_replace(
+                                            '#</?(html|body)\b[^>]*>#i',
+                                            '',
+                                            (string) $cleanBodyHtml,
+                                        );
+                                        $cleanBodyHtml = trim((string) $cleanBodyHtml);
+
+                                        $plainBody = strip_tags($cleanBodyHtml);
+                                        $plainBody = str_replace("\xc2\xa0", ' ', $plainBody);
+                                        $plainBody = preg_replace('/\s+/u', ' ', (string) $plainBody);
+                                        $plainBody = trim((string) $plainBody);
+                                        $title = $blog->title ?? \Illuminate\Support\Str::limit($plainBody, 60);
+                                    @endphp
+
+                                    @if ($title)
+                                        <h2 class="post-opt-title" style="margin-bottom:10px;">
+                                            <a href="{{ route('webite-blog-single', $blog->id) }}">{{ $title }}</a>
+                                        </h2>
+                                    @endif
 
                                     {{-- ✅ DETAILS PREVIEW (HTML render + decode) --}}
-                                    <div class="blog-excerpt" style="line-height:1.9;">
-                                        {!! \Illuminate\Support\Str::limit(htmlspecialchars_decode($blog->details ?? ''), 200) !!}
+                                    <div class="blog-excerpt blog-excerpt-html" style="line-height:1.9;">
+                                        {!! $cleanBodyHtml !!}
                                     </div>
 
                                     <span class="fw-separator fl-wrap"></span>
@@ -85,7 +129,8 @@
                                         <a href="{{ route('webite-blog-single', $blog->id) }}">
                                             <img src="{{ asset($blog->user->profile_photo ?? 'images/21.jpg') }}"
                                                 alt="{{ $blog->user->name ?? 'Admin' }}">
-                                            <span>By {{ $blog->user->name ?? 'Admin' }}</span>
+                                            <span>By
+                                                {{ $blog->user->name ?? 'Admin' }}</span>
                                         </a>
                                     </div>
 
@@ -126,17 +171,26 @@
                                 <div class="widget-posts fl-wrap">
                                     <ul class="no-list-style">
                                         @foreach ($popularResources as $p)
+                                            @php
+                                                $pBody = $p->description ?? ($p->details ?? '');
+                                                $pText = html_entity_decode($pBody, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                                                $pText = strip_tags($pText);
+                                                $pText = str_replace("\xc2\xa0", ' ', $pText);
+                                                $pText = preg_replace('/\s+/u', ' ', (string) $pText);
+                                                $pText = trim((string) $pText);
+                                                $pTitle = $p->title ?? \Illuminate\Support\Str::limit($pText, 45);
+                                            @endphp
                                             <li>
                                                 <div class="widget-posts-img">
                                                     <a href="{{ route('webite-blog-single', $p->id) }}">
                                                         <img src="{{ asset($p->image ?? 'images/default-blog.jpg') }}"
-                                                            alt="{{ $p->title }}">
+                                                            alt="{{ $pTitle }}">
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-descr">
                                                     <h4>
                                                         <a href="{{ route('webite-blog-single', $p->id) }}">
-                                                            {{ \Illuminate\Support\Str::limit($p->title, 45) }}
+                                                            {{ $pTitle }}
                                                         </a>
                                                     </h4>
                                                     <div class="geodir-category-location fl-wrap">
@@ -163,8 +217,8 @@
                                         @foreach ($latestListings as $l)
                                             @php
                                                 $img = $l->business_img
-                                                    ? 'https://mergersales.com/storage/app/public/' . ltrim($l->business_img, '/')
-                                                    : asset('images/1.jpg');
+                                                    ? asset('storage/' . ltrim($l->business_img, '/'))
+                                                    : asset('assets/images/1.jpg');
 
                                                 $singleUrl = route('business.single', $l->id);
                                             @endphp
@@ -232,9 +286,7 @@
                                             )->format('d F Y');
                                         @endphp
                                         <li>
-                                            <a href="#">
-                                                {{ $fullDate }} ({{ $a->total }})
-                                            </a>
+                                            {{ $fullDate }} ({{ $a->total }})
                                         </li>
                                     @endforeach
                                 </ul>
@@ -249,4 +301,10 @@
     </div>
 
     <div class="limit-box fl-wrap"></div>
+    <style>
+        .blog-excerpt-html {
+            max-height: 210px;
+            overflow: hidden;
+        }
+    </style>
 @endsection

@@ -34,6 +34,13 @@
 
                             <div class="block-box fl-wrap search-sb" id="filters-column">
 
+                                {{-- Keyword --}}
+                                <div class="listsearch-input-item">
+                                    <label>Keyword</label>
+                                    <input type="text" name="keyword" placeholder="Search by keyword..."
+                                        value="{{ request('keyword') }}" />
+                                </div>
+
                                 {{-- ✅ Deal Type (VALUES MUST MATCH DB ENUM EXACTLY) --}}
                                 <div class="listsearch-input-item">
                                     <label>Deal Type</label>
@@ -60,8 +67,9 @@
                                         {{-- Industry (ID) --}}
                                         <div class="col-sm-12">
                                             <label>Industry</label>
-                                            <select name="industry_id" data-placeholder="Industry"
-                                                class="chosen-select on-radius no-search-select">
+                                            <select name="industry_id" id="industrySelectBusiness"
+                                                data-placeholder="Industry" class="chosen-select on-radius no-search-select"
+                                                onchange="window.loadBusinessSubIndustries && window.loadBusinessSubIndustries(this.value)">
                                                 <option value="" {{ !request('industry_id') ? 'selected' : '' }}>All
                                                     Industries</option>
                                                 @foreach ($industries as $ind)
@@ -74,6 +82,31 @@
                                         </div>
 
                                     </div>
+                                </div>
+
+                                {{-- Sub Industry --}}
+                                <div class="listsearch-input-item">
+                                    <label>Sub-Industry</label>
+                                    <select name="sub_industry_id" id="subIndustrySelectBusiness"
+                                        data-placeholder="Sub-Industry" class="on-radius subindustry-native-select">
+                                        <option value="" {{ !request('sub_industry_id') ? 'selected' : '' }}>All
+                                            Sub-Industries</option>
+                                        @php
+                                            $selectedInd = null;
+                                            $indId = request('industry_id') ?? request('industry');
+                                            if ($indId) {
+                                                $selectedInd = $industries->firstWhere('id', (int) $indId);
+                                            }
+                                        @endphp
+                                        @if ($selectedInd)
+                                            @foreach ($selectedInd->subIndustries as $sub)
+                                                <option value="{{ $sub->id }}"
+                                                    {{ (string) request('sub_industry_id') === (string) $sub->id ? 'selected' : '' }}>
+                                                    {{ $sub->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
                                 </div>
 
                                 {{-- Revenue Range --}}
@@ -148,32 +181,15 @@
 
                                         <div class="col-sm-6">
                                             <label>Country</label>
-                                            <select name="country" data-placeholder="All Countries"
-                                                class="chosen-select on-radius no-search-select">
-                                                <option value="" {{ !request('country') ? 'selected' : '' }}>All
-                                                    Countries</option>
-                                                <option value="England"
-                                                    {{ request('country') == 'England' ? 'selected' : '' }}>England
-                                                </option>
-                                                <option value="London"
-                                                    {{ request('country') == 'London' ? 'selected' : '' }}>London</option>
-                                                <option value="Japan"
-                                                    {{ request('country') == 'Japan' ? 'selected' : '' }}>Japan
-                                                </option>
-                                                <option value="USA" {{ request('country') == 'USA' ? 'selected' : '' }}>
-                                                    USA
-                                                </option>
-                                                <option value="Japan"
-                                                    {{ request('country') == 'Japan' ? 'selected' : '' }}>Japan</option>
-                                                <option value="UK" {{ request('country') == 'UK' ? 'selected' : '' }}>
-                                                    UK
-                                                </option>
-                                                <option value="UAE" {{ request('country') == 'UAE' ? 'selected' : '' }}>
-                                                    UAE</option>
-                                                <option value="India"
-                                                    {{ request('country') == 'India' ? 'selected' : '' }}>India
-                                                </option>
-                                            </select>
+                                            <input type="text" name="country" id="countryAutocomplete"
+                                                placeholder="All countries (search any country)"
+                                                value="{{ request('country') }}" class="on-radius"
+                                                style="width:100%;height:48px;padding:10px 14px;border:1px solid #e5e7eb;border-radius:6px;">
+                                            <div id="countrySuggestions" class="country-suggestions" style="display:none;">
+                                            </div>
+                                            {{-- <small style="display:block;margin-top:6px;color:#6b7280;">
+                                                Leave empty for all countries. Type to search globally via Google Maps.
+                                            </small> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -194,7 +210,8 @@
                             </div>
                         </form>
 
-                        <a class="back-tofilters color-bg custom-scroll-link fl-wrap scroll-to-fixed-fixed" href="#">
+                        <a class="back-tofilters color-bg custom-scroll-link fl-wrap scroll-to-fixed-fixed"
+                            href="#">
                             Back to filters <i class="fas fa-caret-up"></i>
                         </a>
 
@@ -211,6 +228,27 @@
                     .back-tofilters {
                         z-index: 1 !important;
                         position: relative;
+                    }
+
+                    /* Sub-Industry native select: keep same visual style as other filters */
+                    .subindustry-native-select {
+                        display: block !important;
+                        width: 100%;
+                        height: 50px;
+                        padding: 12px 42px 12px 14px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 6px;
+                        background-color: #f6f7fb;
+                        color: #6a7fa2;
+                        font-size: 15px;
+                        line-height: 24px;
+                        appearance: none;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        background-image: linear-gradient(45deg, transparent 50%, #caa95a 50%), linear-gradient(135deg, #caa95a 50%, transparent 50%);
+                        background-position: calc(100% - 22px) calc(50% - 3px), calc(100% - 15px) calc(50% - 3px);
+                        background-size: 7px 7px, 7px 7px;
+                        background-repeat: no-repeat;
                     }
                 </style>
 
@@ -241,8 +279,8 @@
                         @forelse ($listings as $listing)
                             @php
                                 $img = $listing->business_img
-                                    ? 'https://mergersales.com/storage/app/public/' . ltrim($listing->business_img, '/')
-                                    : asset('images/1.jpg');
+                                    ? asset('storage/' . ltrim($listing->business_img, '/'))
+                                    : asset('assets/images/1.jpg');
 
                                 $singleUrl = route('business.single', $listing->id);
                             @endphp
@@ -276,7 +314,7 @@
     ">
 
                                             <!-- LEFT SIDE -->
-                                            {{-- <span
+                                            <span
                                                 style="
             display:inline-flex;
             align-items:center;
@@ -290,10 +328,10 @@
         ">
                                                 <i class="fas fa-briefcase" style="font-size:12px;"></i>
                                                 {{ $listing->deal_type ?? 'Latest' }}
-                                            </span> --}}
+                                            </span>
 
                                             <!-- RIGHT SIDE -->
-                                            {{-- <span
+                                            <span
                                                 style="
             display:inline-flex;
             align-items:center;
@@ -307,7 +345,7 @@
         ">
                                                 <i class="fas fa-map-marker-alt" style="font-size:12px;"></i>
                                                 {{ $listing->country ?? 'N/A' }}
-                                            </span> --}}
+                                            </span>
 
                                         </div>
 
@@ -325,9 +363,11 @@
                                         </div> --}}
 
                                         <p
-                                            style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:44px;margin-bottom:12px;color:#555;">
+                                            style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;color:#555;">
                                             {{ $listing->description ?? 'No Description Available' }}
                                         </p>
+
+                                        <a href="{{ route('business.single', $listing->id) }}">Read More</a>
 
                                         {{-- <div class="geodir-category-content-details">
                                             <ul>
@@ -394,4 +434,192 @@
             }
         });
     </script>
+
+    {{-- Sub-industry AJAX populate --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ind = document.getElementById('industrySelectBusiness');
+            const sub = document.getElementById('subIndustrySelectBusiness');
+            if (!ind || !sub) return;
+            const selectedSubId = "{{ request('sub_industry_id') }}";
+            const localSubIndustryMap = @json(
+                $industries->mapWithKeys(function ($industry) {
+                    return [
+                        (string) $industry->id => $industry->subIndustries->map(function ($sub) {
+                                return ['id' => $sub->id, 'name' => $sub->name];
+                            })->values(),
+                    ];
+                }));
+
+            async function loadSubs(industryId) {
+                // reset
+                sub.innerHTML = '<option value="">All Sub-Industries</option>';
+                if (!industryId) {
+                    return;
+                }
+                const localItems = localSubIndustryMap[String(industryId)] || [];
+
+                // Primary source: server-provided in-page map (fast + reliable)
+                localItems.forEach(function(item) {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = item.name;
+                    if (selectedSubId && String(item.id) === String(selectedSubId)) {
+                        opt.selected = true;
+                    }
+                    sub.appendChild(opt);
+                });
+
+                // Fallback source: API route (if local map is empty for any reason)
+                if (!localItems.length) {
+                    try {
+                        const url = "{{ route('sub-industries.by-industry', ['industry' => '__ID__']) }}"
+                            .replace('__ID__', encodeURIComponent(industryId));
+                        const res = await fetch(url, {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        const data = await res.json();
+                        (Array.isArray(data) ? data : []).forEach(function(item) {
+                            const opt = document.createElement('option');
+                            opt.value = item.id;
+                            opt.textContent = item.name;
+                            if (selectedSubId && String(item.id) === String(selectedSubId)) {
+                                opt.selected = true;
+                            }
+                            sub.appendChild(opt);
+                        });
+                    } catch (e) {
+                        // ignore fallback errors
+                    }
+                }
+            }
+
+            // Expose globally for inline onchange fallback.
+            window.loadBusinessSubIndustries = loadSubs;
+
+            ind.addEventListener('change', function() {
+                loadSubs(this.value);
+            });
+
+            // Chosen plugin compatibility: bind explicitly on jQuery too.
+            if (window.jQuery) {
+                jQuery(ind).on('change', function() {
+                    const val = jQuery(this).val();
+                    loadSubs(val);
+                });
+            }
+
+            // If page is loaded with industry in query params, populate sub-industries immediately.
+            if (ind.value) {
+                loadSubs(ind.value);
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('countryAutocomplete');
+            const box = document.getElementById('countrySuggestions');
+            if (!input || !box) return;
+
+            let timer = null;
+            let lastItems = [];
+
+            function hideBox() {
+                box.style.display = 'none';
+                box.innerHTML = '';
+            }
+
+            function renderItems(items) {
+                lastItems = items;
+                if (!items.length) return hideBox();
+                box.innerHTML = items.map(function(item) {
+                    const name = (item.name || '').replace(/"/g, '&quot;');
+                    return '<button type="button" class="country-suggestion-item" data-name="' + name +
+                        '">' + name + '</button>';
+                }).join('');
+                box.style.display = 'block';
+            }
+
+            input.addEventListener('input', function() {
+                clearTimeout(timer);
+                const q = input.value.trim();
+                if (q.length < 2) return hideBox();
+
+                timer = setTimeout(async function() {
+                    try {
+                        const res = await fetch(
+                            `{{ route('countries.autocomplete') }}?q=${encodeURIComponent(q)}`
+                        );
+                        const data = await res.json();
+                        renderItems(Array.isArray(data.items) ? data.items : []);
+                    } catch (e) {
+                        hideBox();
+                    }
+                }, 250);
+            });
+
+            function applyBestMatchIfAny() {
+                const typed = (input.value || '').trim().toLowerCase();
+                if (!typed || !lastItems.length) return;
+                const exact = lastItems.find(i => (i.name || '').toLowerCase() === typed);
+                const starts = lastItems.find(i => (i.name || '').toLowerCase().startsWith(typed));
+                const best = exact || starts || null;
+                if (best && best.name) input.value = best.name;
+            }
+
+            box.addEventListener('click', function(e) {
+                const btn = e.target.closest('.country-suggestion-item');
+                if (!btn) return;
+                input.value = btn.getAttribute('data-name') || '';
+                hideBox();
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    applyBestMatchIfAny();
+                    hideBox();
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                applyBestMatchIfAny();
+                setTimeout(hideBox, 100);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!box.contains(e.target) && e.target !== input) hideBox();
+            });
+        });
+    </script>
+
+    <style>
+        .country-suggestions {
+            position: relative;
+            width: 100%;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            background: #fff;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 99;
+        }
+
+        .country-suggestion-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: 0;
+            background: #fff;
+            padding: 10px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .country-suggestion-item:hover {
+            background: #f7f7f7;
+        }
+    </style>
 @endsection

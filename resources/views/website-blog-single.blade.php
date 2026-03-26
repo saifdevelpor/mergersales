@@ -15,7 +15,7 @@
                         <article class="post-article fl-wrap">
 
                             {{-- Media (Gallery OR Featured Image) --}}
-                            <div class="list-single-main-media fl-wrap">
+                            <div class="list-single-main-media fl-wrap single-blog-media">
                                 @php
                                     // gallery can be json array OR empty
                                     $gallery = $blog->gallery ?? []; // e.g. ["uploads/a.jpg","uploads/b.jpg"]
@@ -32,7 +32,8 @@
                                                         <a href="{{ asset($img) }}" class="gal-link popup-image">
                                                             <i class="fal fa-search"></i>
                                                         </a>
-                                                        <img src="{{ asset($img) }}" alt="{{ $blog->title }}">
+                                                        <img src="{{ asset($img) }}" alt="{{ $blog->title }}"
+                                                            class="single-blog-main-image">
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -41,7 +42,8 @@
                                         <div class="swiper-button-next ssw-btn"><i class="fas fa-caret-right"></i></div>
                                     </div>
                                 @else
-                                    <img src="{{ asset($featured) }}" class="respimg" alt="{{ $blog->title }}">
+                                    <img src="{{ asset($featured) }}" class="respimg single-blog-main-image"
+                                        alt="{{ $blog->title }}">
                                 @endif
                             </div>
 
@@ -49,7 +51,10 @@
                             <div class="list-single-main-item fl-wrap block_box">
                                 <div class="single-article-header fl-wrap">
                                     <h2 class="post-opt-title">
-                                        {!! \Illuminate\Support\Str::limit(htmlspecialchars_decode($blog->details ?? ''), 150) !!}
+                                        @php
+                                            $bodyHtml = $blog->description ?? ($blog->details ?? '');
+                                        @endphp
+                                        {!! \Illuminate\Support\Str::limit(htmlspecialchars_decode($bodyHtml), 150) !!}
                                     </h2>
 
                                     <span class="fw-separator"></span>
@@ -81,7 +86,7 @@
 
                                 {{-- Blog Body (fallback) --}}
                                 <div class="blog-content">
-                                    {!! htmlspecialchars_decode($blog->details ?? '<p>No details available for this post yet.</p>') !!}
+                                    {!! htmlspecialchars_decode($bodyHtml ?: '<p>No details available for this post yet.</p>') !!}
                                 </div>
                             </div>
                         </article>
@@ -98,10 +103,9 @@
                                             <ul class="no-list-style">
                                                 @foreach ($relatedBlogs as $rp)
                                                     @php
-                                                        // ✅ Clean text (no HTML)
-                                                        $plain = strip_tags(
-                                                            htmlspecialchars_decode($rp->details ?? ''),
-                                                        );
+                                                        // ✅ Clean text (no HTML) - support both schemas
+                                                        $rpBody = $rp->description ?? ($rp->details ?? '');
+                                                        $plain = strip_tags(htmlspecialchars_decode($rpBody));
                                                         $short = \Illuminate\Support\Str::limit($plain, 70);
 
                                                         // ✅ Image fallback
@@ -178,7 +182,8 @@
                                         @foreach ($popularPosts as $p)
                                             @php
                                                 // ✅ clean text for sidebar (no HTML tags)
-                                                $plain = strip_tags(htmlspecialchars_decode($p->details ?? ''));
+                                                $pBody = $p->description ?? ($p->details ?? '');
+                                                $plain = strip_tags(htmlspecialchars_decode($pBody));
                                                 $short = \Illuminate\Support\Str::limit($plain, 80);
 
                                                 // ✅ image fallback
@@ -253,4 +258,27 @@
     </div>
 
     <div class="limit-box fl-wrap"></div>
+
+    <style>
+        .single-blog-media {
+            overflow: visible;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            background: #f4f6f8;
+        }
+
+        .single-blog-main-image {
+            width: 100%;
+            height: 50vh;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .single-blog-media {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 @endsection

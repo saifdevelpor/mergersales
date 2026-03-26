@@ -4,6 +4,7 @@
     </IfModule>
 
     RewriteEngine On
+    RewriteBase /Mergersales/
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

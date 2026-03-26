@@ -15,8 +15,8 @@
         // ---------- Safe defaults (no design change) ----------
 
         $heroBg = $business->business_img
-            ? 'https://mergersales.com/storage/app/public/' . $business->business_img
-            : asset('images/1.jpg');
+            ? asset('storage/' . ltrim($business->business_img, '/'))
+            : asset('assets/images/1.jpg');
         $dealType = $business->deal_type ?? 'For Sale';
         $industryName = $business->industry->name ?? 'Industry';
         $subIndustryName = $business->subIndustry->name ?? 'Business';

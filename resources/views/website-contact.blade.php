@@ -49,7 +49,7 @@
             <div class="clearfix"></div>
             <div class="contacts-opt fl-wrap">
                 <div class="contact-social">
-                    <span class="cs-title">Connect with us: </span>
+                    <span class="cs-title">Connect with us</span>
                     <ul class="social-grid">
                         <li><a href="https://www.linkedin.com/company/merger-sales/" target="_blank"><i
                                     class="fab fa-linkedin-in"></i></a></li>
@@ -62,31 +62,85 @@
                 </div>
             </div>
             <style>
+                .contacts-opt {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 36px;
+                }
+
+                .contact-social {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end; /* desktop: right edge */
+                    text-align: right;
+                }
+
+                .contact-social .cs-title {
+                    display: block;
+                    font-size: 15px;
+                    line-height: 1.2;
+                    font-weight: 700;
+                    color: #003b8b;
+                    text-transform: uppercase;
+                    margin-bottom: 22px;
+                    letter-spacing: 0.5px;
+                }
+
                 .social-grid {
                     display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    /* 2 columns */
+                    grid-template-columns: repeat(2, 56px);
                     gap: 10px;
                     padding: 0;
+                    margin: 0;
                     list-style: none;
+                    justify-content: end; /* keep it on right */
                 }
 
                 .social-grid li a {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 60px;
+                    width: 50px;
+                    height: 50px;
                     background: #CCAA57;
-                    /* aapka theme color */
                     color: #fff;
                     font-size: 20px;
-                    border-radius: 8px;
+                    border-radius: 10px;
                     text-decoration: none;
-                    transition: 0.3s;
+                    transition: all 0.25s ease;
+                    box-shadow: 0 6px 14px rgba(204, 170, 87, 0.22);
                 }
 
                 .social-grid li a:hover {
-                    background: #333;
+                    background: #b99646;
+                    transform: translateY(-3px);
+                }
+
+                @media (max-width: 768px) {
+                    .contacts-opt {
+                        justify-content: center;
+                    }
+
+                    .contact-social {
+                        align-items: center;
+                        text-align: center;
+                    }
+
+                    .contact-social .cs-title {
+                        font-size: 18px;
+                    }
+
+                    .social-grid {
+                        grid-template-columns: repeat(2, 52px);
+                        gap: 8px;
+                        justify-content: center;
+                    }
+
+                    .social-grid li a {
+                        width: 52px;
+                        height: 52px;
+                        font-size: 18px;
+                    }
                 }
             </style>
         </div>

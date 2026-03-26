@@ -25,10 +25,6 @@ use Illuminate\Support\Facades\Http;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return redirect('/');
-});
-
 Route::get('/', [WebsiteController::class, 'home'])->name('webite-home');
 Route::get('/Business', [WebsiteController::class, 'website_business'])->name('webite-business');
 Route::get('Business-single/{id}', [WebsiteController::class, 'website_business_single'])->name('business.single');
@@ -38,8 +34,9 @@ Route::get('/Blog', [WebsiteController::class, 'website_blog'])->name('webite-bl
 Route::get('/Blog-single/{id}', [WebsiteController::class, 'website_blog_single'])->name('webite-blog-single');
 Route::get('/Policy', [WebsiteController::class, 'website_privacy_policy'])->name('webite-privacy-policy');
 Route::get('/Terms-Conditions', [WebsiteController::class, 'website_terms_conditions'])->name('webite-terms-conditions');
+Route::get('/countries/autocomplete', [WebsiteController::class, 'countriesAutocomplete'])->name('countries.autocomplete');
 // Public: Industry / Browse
-Route::get('/sub-industries/{industry}', [IndustryController::class, 'getSubIndustries']);
+Route::get('/sub-industries/{industry}', [IndustryController::class, 'getSubIndustries'])->name('sub-industries.by-industry');
 Route::get('/businesses-for-sale/{industrySlug}/{subIndustrySlug?}', [ListingController::class, 'browseByIndustry'])
     ->name('listings.browseByIndustry');
 
