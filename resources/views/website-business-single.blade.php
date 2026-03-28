@@ -764,7 +764,7 @@
 
                                 </ul>
                             </div>
-                            <a href="{{ url('website-business') }}" class="btn float-btn color-bg small-btn">Browse All
+                            <a href="{{ url('Business') }}" class="btn float-btn color-bg small-btn">Browse All
                                 Businesses</a>
                         </div>
                     </div>
