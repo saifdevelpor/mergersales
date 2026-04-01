@@ -62,8 +62,8 @@
                                             : null;
 
                                         // ✅ URLs for downloads (only show if your routes exist)
-                                        $downloadNdaUrl = route('enquiries.downloadNda', $enquiry->id);
-                                        $downloadSignedNdaUrl = route('enquiries.downloadSignedNda', $enquiry->id);
+                                        $downloadNdaUrl = route('enquiries.downloadNda', e_id($enquiry->id));
+                                        $downloadSignedNdaUrl = route('enquiries.downloadSignedNda', e_id($enquiry->id));
 
                                         // ✅ pack enquiry data for modal
                                         $payload = [

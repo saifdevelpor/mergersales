@@ -114,7 +114,7 @@
                                                             : asset('images/default-blog.jpg');
 
                                                         // ✅ Single page link
-                                                        $url = route('webite-blog-single', $rp->id);
+                                                        $url = route('webite-blog-single', e_id($rp->id));
                                                     @endphp
 
                                                     <li>
@@ -190,7 +190,7 @@
                                                 $img = $p->image ? asset($p->image) : asset('images/default-blog.jpg');
 
                                                 // ✅ blog link
-                                                $url = route('webite-blog-single', $p->id);
+                                                $url = route('webite-blog-single', e_id($p->id));
                                             @endphp
 
                                             <li>

@@ -54,7 +54,7 @@
 
                             {{-- View --}}
                             @if ($listing->status === 'Approved' || auth()->user()->role === 'Admin')
-                                <a href="{{ route('listings.show', $listing->id) }}"
+                                <a href="{{ route('listings.show', e_id($listing->id)) }}"
                                     class="btn btn-sm btn-outline-primary w-100">
                                     View
                                 </a>
@@ -63,7 +63,7 @@
                             {{-- Admin Actions --}}
                             @if (auth()->user()->role === 'Admin')
                                 @if (in_array($listing->status, ['Pending', 'Rejected']))
-                                    <form action="{{ route('listings.approve', $listing->id) }}" method="POST"
+                                    <form action="{{ route('listings.approve', e_id($listing->id)) }}" method="POST"
                                         class="w-100">
                                         @csrf
                                         @method('PATCH')
@@ -74,7 +74,7 @@
                                 @endif
 
                                 @if (in_array($listing->status, ['Pending', 'Approved']))
-                                    <form action="{{ route('listings.reject', $listing->id) }}" method="POST"
+                                    <form action="{{ route('listings.reject', e_id($listing->id)) }}" method="POST"
                                         class="w-100">
                                         @csrf
                                         @method('PATCH')

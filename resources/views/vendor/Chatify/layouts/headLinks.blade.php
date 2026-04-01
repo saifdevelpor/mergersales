@@ -2,8 +2,8 @@
 
 {{-- Meta tags --}}
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="id" content="{{ $id }}">
-<meta name="listing-id" content="{{ request('listing_id') }}">
+<meta name="id" content="{{ d_id($id) ?? $id }}">
+<meta name="listing-id" content="{{ d_id(request('listing_id')) ?? request('listing_id') }}">
 <link rel="icon" type="image/x-icon" href="{{ asset('assets/favicon.jpeg') }}" />
 <meta name="messenger-color" content="{{ $messengerColor }}">
 <meta name="messenger-theme" content="{{ $dark_mode }}">

@@ -45,24 +45,24 @@
             <div class="nav-holder main-menu">
                 <nav>
                     <ul class="no-list-style">
-                        <li class="{{ request()->is('/') ? 'active' : '' }}">
-                            <a href="{{ url('/') }}">Home</a>
+                        <li class="{{ request()->routeIs('webite-home') ? 'active' : '' }}">
+                            <a href="{{ route('webite-home') }}">Home</a>
                         </li>
 
-                        <li class="{{ request()->is('About-Us') ? 'active' : '' }}">
-                            <a href="{{ url('About-Us') }}">About</a>
+                        <li class="{{ request()->routeIs('webite-about') ? 'active' : '' }}">
+                            <a href="{{ route('webite-about') }}">About</a>
                         </li>
 
-                        <li class="{{ request()->is('Business') ? 'active' : '' }}">
-                            <a href="{{ url('Business') }}">Business</a>
+                        <li class="{{ request()->routeIs('webite-business') ? 'active' : '' }}">
+                            <a href="{{ route('webite-business') }}">Business</a>
                         </li>
 
-                        <li class="{{ request()->is('Blog') ? 'active' : '' }}">
-                            <a href="{{ url('Blog') }}">Blog</a>
+                        <li class="{{ request()->routeIs('webite-blog') ? 'active' : '' }}">
+                            <a href="{{ route('webite-blog') }}">Blog</a>
                         </li>
 
-                        <li class="{{ request()->is('Contact-Us') ? 'active' : '' }}">
-                            <a href="{{ url('Contact-Us') }}">Contact Us</a>
+                        <li class="{{ request()->routeIs('webite-contact') ? 'active' : '' }}">
+                            <a href="{{ route('webite-contact') }}">Contact Us</a>
                         </li>
                     </ul>
                 </nav>
@@ -260,11 +260,11 @@
                                         <h4>Quick Links</h4>
                                     </div>
                                     <ul class="footer-list fl-wrap">
-                                        <li><a href="{{ url('/') }}">Home</a></li>
-                                        <li><a href="{{ url('About-Us') }}">About</a></li>
-                                        <li><a href="{{ url('Business') }}">Business</a></li>
-                                        <li><a href="{{ url('Blog') }}">Blog</a></li>
-                                        <li><a href="{{ url('Contact-Us') }}">Contact Us</a></li>
+                                        <li><a href="{{ route('webite-home') }}">Home</a></li>
+                                        <li><a href="{{ route('webite-about') }}">About</a></li>
+                                        <li><a href="{{ route('webite-business') }}">Business</a></li>
+                                        <li><a href="{{ route('webite-blog') }}">Blog</a></li>
+                                        <li><a href="{{ route('webite-contact') }}">Contact Us</a></li>
                                     </ul>
                                 </div>
                             </div>

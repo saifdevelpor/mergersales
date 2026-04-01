@@ -279,10 +279,10 @@
                         @forelse ($listings as $listing)
                             @php
                                 $img = $listing->business_img
-                                    ? asset('storage/' . ltrim($listing->business_img, '/'))
+                                    ? ('https://mergersales.com/storage/app/public/' . ltrim($listing->business_img, '/'))
                                     : asset('assets/images/1.jpg');
 
-                                $singleUrl = route('business.single', $listing->id);
+                                $singleUrl = route('business.single', e_id($listing->id));
                             @endphp
 
                             <div class="listing-item" data-responsive-card
@@ -367,7 +367,7 @@
                                             {{ $listing->description ?? 'No Description Available' }}
                                         </p>
 
-                                        <a href="{{ route('business.single', $listing->id) }}">Read More</a>
+                                        <a href="{{ route('business.single', e_id($listing->id)) }}">Read More</a>
 
                                         {{-- <div class="geodir-category-content-details">
                                             <ul>

@@ -91,7 +91,7 @@
                                         </a>
 
                                         <form id="delete-form-{{ $user->id }}"
-                                            action="{{ route('user-delete', $user->id) }}" method="POST"
+                                            action="{{ route('user-delete', e_id($user->id)) }}" method="POST"
                                             style="display:none">
                                             @csrf
                                             @method('DELETE')
@@ -111,7 +111,7 @@
         <div class="modal fade" id="editUser{{ $user->id }}" tabindex="-1"
             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
             <div class="modal-dialog modal-md">
-                <form method="POST" action="{{ route('user-update', $user->id) }}" enctype="multipart/form-data"
+                <form method="POST" action="{{ route('user-update', e_id($user->id)) }}" enctype="multipart/form-data"
                     class="modal-content">
                     @csrf
 

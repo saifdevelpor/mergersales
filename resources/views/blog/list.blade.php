@@ -89,7 +89,7 @@
                                         </a>
 
                                         <form id="delete-form-{{ $blog->id }}"
-                                            action="{{ route('blogs.destroy', $blog->id) }}" method="POST"
+                                            action="{{ route('blogs.destroy', e_id($blog->id)) }}" method="POST"
                                             style="display:none">
                                             @csrf
                                             @method('DELETE')
@@ -144,7 +144,7 @@
     @foreach ($blogs as $blog)
         <div class="modal fade" id="editBlog{{ $blog->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <form method="POST" action="{{ route('blogs.update', $blog->id) }}" enctype="multipart/form-data"
+                <form method="POST" action="{{ route('blogs.update', e_id($blog->id)) }}" enctype="multipart/form-data"
                     class="modal-content">
                     @csrf
                     {{-- ✅ Add method spoofing (recommended) --}}

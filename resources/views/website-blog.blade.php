@@ -62,7 +62,7 @@
                                             <div class="swiper-button-next ssw-btn"><i class="fas fa-caret-right"></i></div>
                                         </div>
                                     @else
-                                        <a href="{{ route('webite-blog-single', $blog->id) }}">
+                                        <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">
                                             <img src="{{ asset($blog->image ?? 'images/default-blog.jpg') }}"
                                                 class="respimg" alt="Blog image">
                                         </a>
@@ -114,7 +114,7 @@
 
                                     @if ($title)
                                         <h2 class="post-opt-title" style="margin-bottom:10px;">
-                                            <a href="{{ route('webite-blog-single', $blog->id) }}">{{ $title }}</a>
+                                            <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">{{ $title }}</a>
                                         </h2>
                                     @endif
 
@@ -126,7 +126,7 @@
                                     <span class="fw-separator fl-wrap"></span>
 
                                     <div class="post-author">
-                                        <a href="{{ route('webite-blog-single', $blog->id) }}">
+                                        <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">
                                             <img src="{{ asset($blog->user->profile_photo ?? 'images/21.jpg') }}"
                                                 alt="{{ $blog->user->name ?? 'Admin' }}">
                                             <span>By
@@ -143,7 +143,7 @@
                                         </ul>
                                     </div>
 
-                                    <a href="{{ route('webite-blog-single', $blog->id) }}"
+                                    <a href="{{ route('webite-blog-single', e_id($blog->id)) }}"
                                         class="btn color-bg float-btn small-btn">
                                         Read Full Guide
                                     </a>
@@ -182,19 +182,19 @@
                                             @endphp
                                             <li>
                                                 <div class="widget-posts-img">
-                                                    <a href="{{ route('webite-blog-single', $p->id) }}">
+                                                    <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
                                                         <img src="{{ asset($p->image ?? 'images/default-blog.jpg') }}"
                                                             alt="{{ $pTitle }}">
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-descr">
                                                     <h4>
-                                                        <a href="{{ route('webite-blog-single', $p->id) }}">
+                                                        <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
                                                             {{ $pTitle }}
                                                         </a>
                                                     </h4>
                                                     <div class="geodir-category-location fl-wrap">
-                                                        <a href="{{ route('webite-blog-single', $p->id) }}">
+                                                        <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
                                                             <i class="fal fa-calendar"></i>
                                                             {{ optional($p->created_at)->format('d M Y') }}
                                                         </a>
@@ -220,7 +220,7 @@
                                                     ? asset('storage/' . ltrim($l->business_img, '/'))
                                                     : asset('assets/images/1.jpg');
 
-                                                $singleUrl = route('business.single', $l->id);
+                                                $singleUrl = route('business.single', e_id($l->id));
                                             @endphp
 
                                             <li>

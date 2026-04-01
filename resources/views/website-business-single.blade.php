@@ -7,7 +7,7 @@
 @section('website-content')
     {{-- @php
         $heroBg = $business->business_img
-            // ? ('http://mergersales.com/storage/app/public/' . ltrim($business->business_img, '/'))
+            // ? ('http://localhost/mergersales/storage/app/public/' . ltrim($business->business_img, '/'))
             : asset('images/22.jpg');
     @endphp --}}
 
@@ -15,7 +15,7 @@
         // ---------- Safe defaults (no design change) ----------
 
         $heroBg = $business->business_img
-            ? asset('storage/' . ltrim($business->business_img, '/'))
+            ? ('https://mergersales.com/storage/app/public/' . ltrim($business->business_img, '/'))
             : asset('assets/images/1.jpg');
         $dealType = $business->deal_type ?? 'For Sale';
         $industryName = $business->industry->name ?? 'Industry';
@@ -742,14 +742,14 @@
 
                                         <li>
                                             <div class="widget-posts-img">
-                                                <a href="{{ route('business.single', $item->id) }}">
+                                                <a href="{{ route('business.single', e_id($item->id)) }}">
                                                     <img src="{{ $itemImg }}" alt="">
                                                 </a>
                                             </div>
                                             <div class="widget-posts-descr">
                                                 <h4>
                                                     <a
-                                                        href="{{ route('business.single', $item->id) }}">{{ $itemTitle }}</a>
+                                                        href="{{ route('business.single', e_id($item->id)) }}">{{ $itemTitle }}</a>
                                                 </h4>
                                                 <div class="geodir-category-location fl-wrap">
                                                     <a href="#"><i class="fas fa-globe"></i>

@@ -64,7 +64,7 @@
                             <td>{{ $t->attachments_count }}</td>
 
                             <td>
-                                <form method="POST" action="{{ route('ticket.updateStatus', $t->id) }}">
+                                <form method="POST" action="{{ route('ticket.updateStatus', e_id($t->id)) }}">
                                     @csrf
                                     <select name="status" class="form-control">
                                         <option value="open" {{ $t->status == 'open' ? 'selected' : '' }}>Open</option>
@@ -84,7 +84,7 @@
                             </td>
 
                             <td>
-                                <a class="btn btn-sm" style="color:#CCAA57;" href="{{ route('tickets.show', $t->id) }}">
+                                <a class="btn btn-sm" style="color:#CCAA57;" href="{{ route('tickets.show', e_id($t->id)) }}">
                                     <i class="ti ti-eye"></i>
                                 </a>
                             </td>

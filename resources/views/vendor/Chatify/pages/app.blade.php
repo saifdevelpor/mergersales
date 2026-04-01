@@ -119,8 +119,10 @@
 
 @php
     // Chatify URL: /chatify/{id}?listing_id=123
-    $chatWithId = request()->route('id'); // {id}
-    $listingId = request('listing_id'); // query param
+    $chatWithRaw = request()->route('id'); // {id}
+    $chatWithId = d_id($chatWithRaw) ?? $chatWithRaw;
+    $listingRaw = request('listing_id'); // query param
+    $listingId = d_id($listingRaw) ?? $listingRaw;
 @endphp
 
 @if ($chatWithId && $listingId)

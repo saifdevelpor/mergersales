@@ -56,8 +56,8 @@
                                             ? url('storage/app/public/' . ltrim($enquiry->buyer_signature_path, '/'))
                                             : null;
 
-                                        $downloadNdaUrl = route('enquiries.downloadNda', $enquiry->id);
-                                        $downloadSignedNdaUrl = route('enquiries.downloadSignedNda', $enquiry->id);
+                                        $downloadNdaUrl = route('enquiries.downloadNda', e_id($enquiry->id));
+                                        $downloadSignedNdaUrl = route('enquiries.downloadSignedNda', e_id($enquiry->id));
 
                                         $payload = [
                                             'id' => $enquiry->id,

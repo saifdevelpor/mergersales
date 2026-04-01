@@ -99,7 +99,7 @@
                                                             <i class="ti ti-trash me-1"></i> Delete
                                                         </a>
                                                         <form id="delete-form-{{ $enquiry->id }}"
-                                                            action="{{ route('enquiries.destroy', $enquiry->id) }}"
+                                                            action="{{ route('enquiries.destroy', e_id($enquiry->id)) }}"
                                                             method="POST" style="display: none;">
                                                             @csrf
                                                             @method('DELETE')
@@ -243,14 +243,14 @@
 
                                         @if ($enquiry->nda_status === 'sent' || $enquiry->nda_status === 'signed')
                                             <a class="btn btn-sm btn-outline-primary"
-                                                href="{{ route('enquiries.downloadNda', $enquiry->id) }}">
+                                                href="{{ route('enquiries.downloadNda', e_id($enquiry->id)) }}">
                                                 Download NDA
                                             </a>
                                         @endif
 
                                         @if ($enquiry->nda_status === 'signed')
                                             <a class="btn btn-sm btn-outline-success"
-                                                href="{{ route('enquiries.downloadSignedNda', $enquiry->id) }}">
+                                                href="{{ route('enquiries.downloadSignedNda', e_id($enquiry->id)) }}">
                                                 Download Signed NDA
                                             </a>
                                         @endif
@@ -277,7 +277,7 @@
                                         <label class="form-label">NDA Preview</label>
 
                                         <div class="border rounded overflow-hidden" style="height:520px;">
-                                            <iframe src="{{ route('enquiries.previewNda', $enquiry->id) }}"
+                                            <iframe src="{{ route('enquiries.previewNda', e_id($enquiry->id)) }}"
                                                 style="width:100%; height:100%; border:0;"></iframe>
                                         </div>
                                     </div>
@@ -296,7 +296,7 @@
                                                 </button>
 
                                                 <form method="POST"
-                                                    action="{{ route('enquiries.signNda', $enquiry->id) }}"
+                                                    action="{{ route('enquiries.signNda', e_id($enquiry->id)) }}"
                                                     onsubmit="return submitSig{{ $enquiry->id }}(this)">
                                                     @csrf
                                                     <input type="hidden" name="signature_data"

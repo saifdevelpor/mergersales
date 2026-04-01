@@ -37,7 +37,7 @@
 
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('listings.show', $listing->id) }}">
+                                                <a class="dropdown-item" href="{{ route('listings.show', e_id($listing->id)) }}">
                                                     <i class="ti ti-eye me-1"></i> View
                                                 </a>
                                             </li>
@@ -57,7 +57,7 @@
                                                     </a>
 
                                                     <form id="delete-form-{{ $listing->id }}"
-                                                        action="{{ route('listings.destroy', $listing->id) }}"
+                                                        action="{{ route('listings.destroy', e_id($listing->id)) }}"
                                                         method="POST" class="d-none">
                                                         @csrf
                                                         @method('DELETE')
@@ -80,7 +80,7 @@
                                                         </a>
 
                                                         <form id="approve-form-{{ $listing->id }}"
-                                                            action="{{ route('listings.approve', $listing->id) }}"
+                                                            action="{{ route('listings.approve', e_id($listing->id)) }}"
                                                             method="POST" class="d-none">
                                                             @csrf
                                                             @method('PATCH')
@@ -97,7 +97,7 @@
                                                         </a>
 
                                                         <form id="reject-form-{{ $listing->id }}"
-                                                            action="{{ route('listings.reject', $listing->id) }}"
+                                                            action="{{ route('listings.reject', e_id($listing->id)) }}"
                                                             method="POST" class="d-none">
                                                             @csrf
                                                             @method('PATCH')
@@ -155,7 +155,7 @@
                                     <div class="card-footer bg-white d-flex justify-content-between flex-wrap gap-2">
 
                                         <!-- View Details (always visible) -->
-                                        <a href="{{ route('listings.show', $listing->id) }}"
+                                        <a href="{{ route('listings.show', e_id($listing->id)) }}"
                                             class="btn btn-outline-primary btn-sm flex-grow-1">
                                             View Details
                                         </a>
@@ -163,7 +163,7 @@
                                         <!-- Enquire Button -->
                                         @if (auth()->user()->role === 'Seller' || auth()->user()->role === 'Admin')
                                             <a class="btn btn-warning btn-sm flex-grow-1"
-                                                href="{{ route('seller.listing.enquiries', $listing->id) }}">
+                                                href="{{ route('seller.listing.enquiries', e_id($listing->id)) }}">
                                                 Enquire ({{ $listing->enquiries->where('status', 'pending')->count() }})
                                             </a>
                                         @elseif (auth()->user()->role === 'Buyer')
@@ -181,17 +181,17 @@
                                             $user = auth()->user();
                                             $unreadCount = (int) ($unreadByListing[$listing->id] ?? 0);
 
-                                            // Buyer: always chat with listing owner (seller)
-                                            $sellerId = $listing->user_id;
+                                            // Buyer: chat with the actual listing owner account.
+                                            $sellerId = $listing->user?->id;
 
                                             // Seller: chat with last buyer who messaged on this listing
                                             $lastBuyerId = $lastSenderByListing[$listing->id] ?? null;
 
                                             $chatWith = null;
-                                            if ($user->role === 'Buyer') {
+                                            if ($user->role === 'Buyer' && $sellerId && (int) $sellerId !== (int) $user->id) {
                                                 $chatWith = $sellerId;
-                                            } elseif ($user->role === 'Seller' && $unreadCount > 0 && $lastBuyerId) {
-                                                // ✅ seller button only when unread exists
+                                            } elseif ($user->role === 'Seller' && $lastBuyerId) {
+                                                // Seller can open chat if any buyer messaged on this listing.
                                                 $chatWith = $lastBuyerId;
                                             }
                                         @endphp
@@ -408,7 +408,7 @@
                         <h5 class="modal-title">Edit Business</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form action="{{ route('listings.update', $listing->id) }}" method="POST"
+                    <form action="{{ route('listings.update', e_id($listing->id)) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
@@ -1067,14 +1067,14 @@
 
                                         @if ($enquiry->nda_status === 'sent' || $enquiry->nda_status === 'signed')
                                             <a class="btn btn-sm btn-outline-primary ms-2"
-                                                href="{{ route('enquiries.downloadNda', $enquiry->id) }}">
+                                                href="{{ route('enquiries.downloadNda', e_id($enquiry->id)) }}">
                                                 Download NDA
                                             </a>
                                         @endif
 
                                         @if ($enquiry->nda_status === 'signed')
                                             <a class="btn btn-sm btn-outline-success ms-2"
-                                                href="{{ route('enquiries.downloadSignedNda', $enquiry->id) }}">
+                                                href="{{ route('enquiries.downloadSignedNda', e_id($enquiry->id)) }}">
                                                 Download Signed NDA
                                             </a>
                                         @endif
@@ -1333,7 +1333,7 @@
 
     <!-- Hidden Delete Forms -->
     @foreach ($listings as $listing)
-        <form id="delete-form-{{ $listing->id }}" action="{{ route('listings.destroy', $listing->id) }}"
+        <form id="delete-form-{{ $listing->id }}" action="{{ route('listings.destroy', e_id($listing->id)) }}"
             method="POST" style="display:none;">
             @csrf
             @method('DELETE')

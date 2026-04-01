@@ -51,13 +51,16 @@ class ListingController extends Controller
                 ->groupBy('listing_id')
                 ->pluck('unread_count', 'listing_id');
 
+            // Determine latest buyer per listing from notifications (listing-aware source).
             $lastSenderByListing = ChatNotification::select('listing_id', DB::raw('MAX(id) as last_id'))
                 ->where('to_id', $user->id)
+                ->whereNotNull('listing_id')
                 ->groupBy('listing_id')
                 ->get()
                 ->mapWithKeys(function ($row) {
-                    $fromId = ChatNotification::where('id', $row->last_id)->value('from_id');
-                    return [$row->listing_id => $fromId];
+                    $fromId = ChatNotification::where('id', $row->last_id)
+                        ->value('from_id');
+                    return [$row->listing_id => (int) $fromId];
                 });
         } else {
             $unreadByListing = ChatNotification::select('listing_id', DB::raw('COUNT(*) as unread_count'))

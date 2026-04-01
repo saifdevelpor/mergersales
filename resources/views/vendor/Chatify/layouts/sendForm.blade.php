@@ -1,7 +1,7 @@
 <div class="messenger-sendCard">
     <form id="message-form" method="POST" action="{{ route('send.message') }}" enctype="multipart/form-data">
         @csrf
-        <input type="hidden" name="listing_id" value="{{ request('listing_id') }}">
+        <input type="hidden" name="listing_id" value="{{ d_id(request('listing_id')) ?? request('listing_id') }}">
 
         <label><span class="fas fa-plus-circle"></span><input disabled='disabled' type="file"
                 class="upload-attachment" name="file"

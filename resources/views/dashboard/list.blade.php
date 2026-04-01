@@ -473,7 +473,7 @@
                                 @endif
                             </div>
 
-                            <a href="{{ route('buyer.notifications.open', $notification->id) }}"
+                            <a href="{{ route('buyer.notifications.open', e_id($notification->id)) }}"
                                 class="fw-bold text-decoration-none">
                                 {{ $notification->data['message'] ?? 'Update received' }}
                             </a>
@@ -513,7 +513,7 @@
                             </div>
 
                             <a class="fw-bold text-decoration-none"
-                                href="{{ route('buyer.notifications.open', $notification->id) }}">
+                                href="{{ route('buyer.notifications.open', e_id($notification->id)) }}">
                                 {{ $notification->data['message'] ?? 'Update received' }}
                             </a>
                         </div>
@@ -998,7 +998,7 @@
                                         {{-- Action --}}
                                         <td>
                                             @if ($b)
-                                                <a href="{{ route('listings.show', $b->id) }}" class="btn btn-sm"
+                                                <a href="{{ route('listings.show', e_id($b->id)) }}" class="btn btn-sm"
                                                     style="background:#CCAA57;color:white;">
                                                     <i class="ti ti-eye"></i>
                                                 </a>

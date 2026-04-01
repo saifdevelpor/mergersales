@@ -66,7 +66,7 @@
 
                             <td>{{ $t->attachments_count }}</td>
                             <td>
-                                <a class="btn btn-sm" style="color:#CCAA57;" href="{{ route('tickets.show', $t->id) }}">
+                                <a class="btn btn-sm" style="color:#CCAA57;" href="{{ route('tickets.show', e_id($t->id)) }}">
                                     <i class="ti ti-eye"></i>
                                 </a>
                             </td>

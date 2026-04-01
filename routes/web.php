@@ -134,11 +134,9 @@ Route::get('/listings/rejected', [ListingController::class, 'rejected'])
      =============================== */
 
 Route::patch('/listings/{listing}/approve', [ListingController::class, 'approve'])
-    ->whereNumber('listing')
     ->name('listings.approve');
 
 Route::patch('/listings/{listing}/reject', [ListingController::class, 'reject'])
-    ->whereNumber('listing')
     ->name('listings.reject');
 
 
@@ -147,11 +145,9 @@ Route::patch('/listings/{listing}/reject', [ListingController::class, 'reject'])
      =============================== */
 
 Route::post('/listings/{listing}/update', [ListingController::class, 'update'])
-    ->whereNumber('listing')
     ->name('listings.update');
 
 Route::delete('/listings/{listing}/delete', [ListingController::class, 'destroy'])
-    ->whereNumber('listing')
     ->name('listings.destroy');
 
 
@@ -161,7 +157,6 @@ Route::delete('/listings/{listing}/delete', [ListingController::class, 'destroy'
      =============================== */
 
 Route::get('/listings/{listing}', [ListingController::class, 'show'])
-    ->whereNumber('listing')
     ->name('listings.show');
 
 

@@ -486,21 +486,43 @@ function sendMessage() {
         messageInput.focus();
       },
       success: (data) => {
-        if (data.error > 0) {
+        const hasError =
+          (typeof data?.error === "number" && data.error > 0) ||
+          (typeof data?.error === "object" && Number(data?.error?.status) > 0);
+        if (hasError) {
           // message card error status
           errorMessageCard(tempID);
-          console.error(data.error_msg);
+          console.error(data?.error_msg || data?.error?.message || "Send message error");
         } else {
           // update contact item
           updateContactItem(getMessengerId());
+          const responseTempId = data?.tempID || data?.temporaryMsgId || tempID;
           // temporary message card
-          const tempMsgCardElement = messagesContainer.find(
-            `.message-card[data-id=${data.tempID}]`
+          let tempMsgCardElement = messagesContainer.find(
+            `.message-card[data-id='${responseTempId}']`
           );
+          if (!tempMsgCardElement.length) {
+            // fallback: latest sender temp card
+            tempMsgCardElement = messagesContainer
+              .find(".message-card.mc-sender[data-id^='temp_']")
+              .last();
+          }
           // add the message card coming from the server before the temp-card
-          tempMsgCardElement.before(data.message);
-          // then, remove the temporary message card
-          tempMsgCardElement.remove();
+          if (data.message && String(data.message).trim().length > 0) {
+            if (tempMsgCardElement.length) {
+              tempMsgCardElement.before(data.message);
+              // then, remove the temporary message card
+              tempMsgCardElement.remove();
+            } else {
+              messagesContainer.find(".messages").append(data.message);
+            }
+          } else {
+            // Fallback: keep message visible and update sending icon instantly.
+            tempMsgCardElement
+              .find(".fa-clock")
+              .removeClass("far fa-clock")
+              .addClass("fas fa-check");
+          }
           // scroll to bottom
           scrollToBottom(messagesContainer);
           // send contact item updates
@@ -1262,6 +1284,12 @@ $(document).ready(function () {
 
   // NProgress configurations
   NProgress.configure({ showSpinner: false, minimum: 0.7, speed: 500 });
+
+  // Ensure direct URL open (/chatify/{id}) loads conversation immediately.
+  // Pusher subscription callbacks can be delayed/missed in some environments.
+  if (getMessengerId() && String(getMessengerId()) !== "0") {
+    IDinfo(getMessengerId());
+  }
 
   // make message input autosize.
   autosize($(".m-send"));

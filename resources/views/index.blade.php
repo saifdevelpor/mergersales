@@ -134,9 +134,9 @@
 
                                 <div class="geodir-category-img fl-wrap"
                                     style="height:220px; overflow:hidden; position:relative;">
-                                    <a href="{{ route('business.single', $listing->id) }}" class="geodir-category-img_item"
+                                    <a href="{{ route('business.single', e_id($listing->id)) }}" class="geodir-category-img_item"
                                         style="display:block; width:100%; height:100%;">
-                                        <img src="{{ $listing->business_img ? asset('storage/' . $listing->business_img) : asset('assets/images/1.jpg') }}"
+                                        <img src="{{ $listing->business_img ? ('https://mergersales.com/storage/app/public/' . $listing->business_img) : asset('assets/images/1.jpg') }}"
                                             alt=""
                                             style="width:100%; height:100%; object-fit:cover; display:block;">
                                         <div class="overlay"></div>
@@ -180,7 +180,7 @@
                                 <div class="geodir-category-content fl-wrap"
                                     style="flex:1; display:flex; flex-direction:column;">
                                     <h3 class="title-sin_item"><a
-                                            href="{{ route('business.single', $listing->id) }}">{{ $listing->business_name }}</a>
+                                            href="{{ route('business.single', e_id($listing->id)) }}">{{ $listing->business_name }}</a>
                                     </h3>
 
                                     {{-- <div class="geodir-category-content_price">
@@ -192,7 +192,7 @@
                                         {{ $listing->description ?? 'No Description Available' }}
                                     </p>
 
-                                    <a href="{{ route('business.single', $listing->id) }}">Read More</a>
+                                    <a href="{{ route('business.single', e_id($listing->id)) }}">Read More</a>
 
                                     {{-- <div class="geodir-category-content-details">
                             <ul>
@@ -206,7 +206,7 @@
                         </div> --}}
 
                                     {{-- <div class="geodir-category-footer fl-wrap" style="margin-top:auto;">
-                            <a href="{{ route('business.single', $listing->id) }}" class="gcf-company">
+                            <a href="{{ route('business.single', e_id($listing->id)) }}" class="gcf-company">
                                 <img src="{{ asset($listing->user->profile_photo ?? 'images/default-user.png') }}"
                                     alt=""
                                     style="width:36px; height:36px; object-fit:cover; border-radius:50%; display:block;">
@@ -235,7 +235,7 @@
                 @endforelse
             </div>
 
-            <a href="{{ url('website-business') }}" class="btn float-btn small-btn color-bg">View All Businesses</a>
+            <a href="{{ route('webite-business') }}" class="btn float-btn small-btn color-bg">View All Businesses</a>
         </div>
 
         <!-- ✅ ONE JS for BOTH sections -->
@@ -552,10 +552,10 @@
 
                                         @php
                                             $img = $blog->image ? asset($blog->image) : asset('images/12.jpg');
-                                            $singleUrl = route('blog.single', $blog->id); // ✅ apna route name set karo
+                                            $singleUrl = route('blog.single', e_id($blog->id)); // ✅ apna route name set karo
                                         @endphp
 
-                                        <a href="{{ route('webite-blog-single', $blog->id) }}"
+                                        <a href="{{ route('webite-blog-single', e_id($blog->id)) }}"
                                             class="geodir-category-img_item"
                                             style="display:block; width:100%; height:100%;">
                                             <img src="{{ $img }}" alt=""
@@ -573,7 +573,7 @@
                                         {{-- icons optional --}}
                                         <div class="agent-card-social fl-wrap">
                                             <ul>
-                                                <li><a href="{{ route('webite-blog-single', $blog->id) }}"><i
+                                                <li><a href="{{ route('webite-blog-single', e_id($blog->id)) }}"><i
                                                             class="fas fa-arrow-right"></i></a>
                                                 </li>
                                             </ul>
@@ -592,11 +592,11 @@
                                         <div class="agent_card-title fl-wrap">
                                             <h4>
                                                 <a
-                                                    href="{{ route('webite-blog-single', $blog->id) }}">{{ $blog->title }}</a>
+                                                    href="{{ route('webite-blog-single', e_id($blog->id)) }}">{{ $blog->title }}</a>
                                             </h4>
 
                                             <h5>
-                                                <a href="{{ route('webite-blog-single', $blog->id) }}">
+                                                <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">
                                                     By: {{ $blog->user->name ?? 'Admin' }}
                                                 </a>
                                             </h5>
@@ -614,7 +614,7 @@
 
                                         {{-- FOOTER --}}
                                         <div class="geodir-category-footer fl-wrap" style="margin-top:auto;">
-                                            <a href="{{ route('webite-blog-single', $blog->id) }}"
+                                            <a href="{{ route('webite-blog-single', e_id($blog->id)) }}"
                                                 class="btn float-btn color-bg small-btn">
                                                 Read More
                                             </a>
