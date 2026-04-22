@@ -37,6 +37,16 @@
 
                         @foreach ($blogs as $blog)
                             <article class="post-article fl-wrap">
+                                @php
+                                    $bodyHtml = $blog->description ?? ($blog->details ?? '');
+                                    $decodedBody = html_entity_decode(
+                                        (string) $bodyHtml,
+                                        ENT_QUOTES | ENT_HTML5,
+                                        'UTF-8',
+                                    );
+                                    $plainBody = trim(preg_replace('/\s+/u', ' ', str_replace("\xc2\xa0", ' ', strip_tags($decodedBody))));
+                                    $title = $blog->title ?? \Illuminate\Support\Str::limit($plainBody, 60);
+                                @endphp
 
                                 {{-- Media --}}
                                 <div class="list-single-main-media fl-wrap">
@@ -62,9 +72,9 @@
                                             <div class="swiper-button-next ssw-btn"><i class="fas fa-caret-right"></i></div>
                                         </div>
                                     @else
-                                        <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">
+                                        <a href="{{ route('seo.blog.show', $blog->slug) }}">
                                             <img src="{{ asset($blog->image ?? 'images/default-blog.jpg') }}"
-                                                class="respimg" alt="Blog image">
+                                                class="respimg" alt="{{ $blog->featured_image_alt ?: ($title ?? 'Blog image') }}">
                                         </a>
                                     @endif
                                 </div>
@@ -73,14 +83,6 @@
                                 <div class="list-single-main-item fl-wrap block_box">
 
                                     @php
-                                        // Support both schemas: `description` (migration) or legacy `details`
-                                        $bodyHtml = $blog->description ?? ($blog->details ?? '');
-                                        $decodedBody = html_entity_decode(
-                                            (string) $bodyHtml,
-                                            ENT_QUOTES | ENT_HTML5,
-                                            'UTF-8',
-                                        );
-
                                         // Remove full-document wrappers/styles often pasted from editors
                                         $cleanBodyHtml = preg_replace('/<!doctype[^>]*>/i', '', $decodedBody);
                                         $cleanBodyHtml = preg_replace(
@@ -109,12 +111,11 @@
                                         $plainBody = str_replace("\xc2\xa0", ' ', $plainBody);
                                         $plainBody = preg_replace('/\s+/u', ' ', (string) $plainBody);
                                         $plainBody = trim((string) $plainBody);
-                                        $title = $blog->title ?? \Illuminate\Support\Str::limit($plainBody, 60);
                                     @endphp
 
                                     @if ($title)
                                         <h2 class="post-opt-title" style="margin-bottom:10px;">
-                                            <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">{{ $title }}</a>
+                                            <a href="{{ route('seo.blog.show', $blog->slug) }}">{{ $title }}</a>
                                         </h2>
                                     @endif
 
@@ -126,7 +127,7 @@
                                     <span class="fw-separator fl-wrap"></span>
 
                                     <div class="post-author">
-                                        <a href="{{ route('webite-blog-single', e_id($blog->id)) }}">
+                                        <a href="{{ route('seo.blog.show', $blog->slug) }}">
                                             <img src="{{ asset($blog->user->profile_photo ?? 'images/21.jpg') }}"
                                                 alt="{{ $blog->user->name ?? 'Admin' }}">
                                             <span>By
@@ -143,7 +144,7 @@
                                         </ul>
                                     </div>
 
-                                    <a href="{{ route('webite-blog-single', e_id($blog->id)) }}"
+                                    <a href="{{ route('seo.blog.show', $blog->slug) }}"
                                         class="btn color-bg float-btn small-btn">
                                         Read Full Guide
                                     </a>
@@ -182,19 +183,19 @@
                                             @endphp
                                             <li>
                                                 <div class="widget-posts-img">
-                                                    <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
+                                                    <a href="{{ route('seo.blog.show', $p->slug) }}">
                                                         <img src="{{ asset($p->image ?? 'images/default-blog.jpg') }}"
-                                                            alt="{{ $pTitle }}">
+                                                            alt="{{ $p->featured_image_alt ?: $pTitle }}">
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-descr">
                                                     <h4>
-                                                        <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
+                                                        <a href="{{ route('seo.blog.show', $p->slug) }}">
                                                             {{ $pTitle }}
                                                         </a>
                                                     </h4>
                                                     <div class="geodir-category-location fl-wrap">
-                                                        <a href="{{ route('webite-blog-single', e_id($p->id)) }}">
+                                                        <a href="{{ route('seo.blog.show', $p->slug) }}">
                                                             <i class="fal fa-calendar"></i>
                                                             {{ optional($p->created_at)->format('d M Y') }}
                                                         </a>
@@ -220,7 +221,7 @@
                                                     ? asset('storage/' . ltrim($l->business_img, '/'))
                                                     : asset('assets/images/1.jpg');
 
-                                                $singleUrl = route('business.single', e_id($l->id));
+                                                $singleUrl = route('seo.business.show', $l->slug);
                                             @endphp
 
                                             <li>

@@ -4,7 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @yield('website-title')
+    @php
+    $routeName = request()->route()?->getName();
+    $resolvedSeo =
+    $seo ??
+    \App\Helpers\SeoHelper::forPage(($seoPageMap ?? collect())->get($routeName), [
+    'canonical' => url()->current(),
+    ]);
+    $schemaItems = $schemas ?? [];
+    if ($routeName === 'webite-home' && $schemaItems === []) {
+    $schemaItems = [\App\Helpers\SeoHelper::organizationSchema()];
+    }
+    @endphp
+    <title>{{ $resolvedSeo['title'] ?? config('app.name', 'Mergersales') }}</title>
+    <meta name="description" content="{{ $resolvedSeo['description'] ?? '' }}">
+    <link rel="canonical" href="{{ $resolvedSeo['canonical'] ?? url()->current() }}">
+    <meta name="robots" content="{{ $resolvedSeo['robots'] ?? 'index,follow' }}">
+    <meta property="og:type" content="{{ data_get($resolvedSeo, 'og.type', 'website') }}">
+    <meta property="og:title" content="{{ data_get($resolvedSeo, 'og.title', config('app.name', 'Mergersales')) }}">
+    <meta property="og:description" content="{{ data_get($resolvedSeo, 'og.description', '') }}">
+    <meta property="og:url" content="{{ data_get($resolvedSeo, 'og.url', url()->current()) }}">
+    <meta property="og:image" content="{{ data_get($resolvedSeo, 'og.image', asset('assets/favicon.jpeg')) }}">
+    <meta name="twitter:card" content="{{ data_get($resolvedSeo, 'twitter.card', 'summary_large_image') }}">
+    <meta name="twitter:title"
+        content="{{ data_get($resolvedSeo, 'twitter.title', config('app.name', 'Mergersales')) }}">
+    <meta name="twitter:description" content="{{ data_get($resolvedSeo, 'twitter.description', '') }}">
+    <meta name="twitter:image" content="{{ data_get($resolvedSeo, 'twitter.image', asset('assets/favicon.jpeg')) }}">
     <link rel="shortcut icon" href="">
     <link type="text/css" rel="stylesheet" href="{{ asset('css/plugins.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/favicon.jpeg') }}" />
@@ -20,6 +45,13 @@
         <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Montserrat:wght@400&display=swap">
     </noscript>
+    @foreach ($schemaItems as $schemaItem)
+    <script type="application/ld+json">
+    {
+        !!json_encode($schemaItem, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!
+    }
+    </script>
+    @endforeach
 </head>
 
 <body>
@@ -68,16 +100,16 @@
                 </nav>
 
                 <style>
-                    .no-list-style li a {
-                        color: #555;
-                        text-decoration: none;
-                        padding: 8px 12px;
-                    }
+                .no-list-style li a {
+                    color: #555;
+                    text-decoration: none;
+                    padding: 8px 12px;
+                }
 
-                    .no-list-style li.active a {
-                        color: #CCAA57;
-                        font-weight: 700;
-                    }
+                .no-list-style li.active a {
+                    color: #CCAA57;
+                    font-weight: 700;
+                }
                 </style>
             </div>
 
@@ -87,148 +119,148 @@
                 @yield('website-content')
             </div>
             <style>
-                /* ===============================
+            /* ===============================
    MODERN FOOTER DESIGN
    (Color Same as Theme)
 ================================ */
 
-                .main-footer {
-                    padding: 60px 0 30px;
-                }
+            .main-footer {
+                padding: 60px 0 30px;
+            }
 
-                .footer-widget {
-                    margin-bottom: 35px;
-                }
+            .footer-widget {
+                margin-bottom: 35px;
+            }
 
-                .footer-widget-logo img {
-                    max-width: 170px;
-                }
+            .footer-widget-logo img {
+                max-width: 170px;
+            }
 
-                .footer-widget p {
-                    margin-top: 15px;
-                    line-height: 1.7;
-                }
+            .footer-widget p {
+                margin-top: 15px;
+                line-height: 1.7;
+            }
 
-                .footer-widget-title h4 {
-                    font-weight: 600;
-                    margin-bottom: 20px;
-                    position: relative;
-                }
+            .footer-widget-title h4 {
+                font-weight: 600;
+                margin-bottom: 20px;
+                position: relative;
+            }
 
-                .footer-widget-title h4:after {
-                    content: '';
-                    width: 40px;
-                    height: 2px;
-                    display: block;
-                    margin-top: 8px;
-                    background: currentColor;
-                    opacity: 0.4;
-                }
+            .footer-widget-title h4:after {
+                content: '';
+                width: 40px;
+                height: 2px;
+                display: block;
+                margin-top: 8px;
+                background: currentColor;
+                opacity: 0.4;
+            }
 
-                .footer-list,
-                .footer-contacts {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
+            .footer-list,
+            .footer-contacts {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
-                .footer-list li,
-                .footer-contacts li {
-                    margin-bottom: 10px;
-                }
+            .footer-list li,
+            .footer-contacts li {
+                margin-bottom: 10px;
+            }
 
-                .footer-list li a,
-                .footer-contacts li a {
-                    transition: 0.3s ease;
-                }
+            .footer-list li a,
+            .footer-contacts li a {
+                transition: 0.3s ease;
+            }
 
-                .footer-list li a:hover,
-                .footer-contacts li a:hover {
-                    padding-left: 5px;
-                }
+            .footer-list li a:hover,
+            .footer-contacts li a:hover {
+                padding-left: 5px;
+            }
 
-                .footer-contacts li span {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                }
+            .footer-contacts li span {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
 
-                .footer-social ul {
-                    display: flex;
-                    gap: 12px;
-                    padding: 0;
-                    margin: 20px 0 0;
-                    list-style: none;
-                }
+            .footer-social ul {
+                display: flex;
+                gap: 12px;
+                padding: 0;
+                margin: 20px 0 0;
+                list-style: none;
+            }
 
-                .footer-social ul li a {
-                    width: 36px;
-                    height: 36px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    transition: 0.3s ease;
-                }
+            .footer-social ul li a {
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: 0.3s ease;
+            }
 
-                .footer-social ul li a:hover {
-                    transform: translateY(-3px);
-                }
+            .footer-social ul li a:hover {
+                transform: translateY(-3px);
+            }
 
-                /* ===============================
+            /* ===============================
    SIGNUP BUTTON MODERN
 ================================ */
 
-                .api-links {
-                    margin-top: 25px;
-                }
+            .api-links {
+                margin-top: 25px;
+            }
 
-                .api-btn {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    padding: 14px 28px;
-                    border-radius: 50px;
-                    font-weight: 600;
-                    text-decoration: none;
-                    transition: 0.3s ease;
-                }
+            .api-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 14px 28px;
+                border-radius: 50px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: 0.3s ease;
+            }
 
-                .api-btn:hover {
-                    transform: translateY(-3px);
-                }
+            .api-btn:hover {
+                transform: translateY(-3px);
+            }
 
-                /* ===============================
+            /* ===============================
    MOBILE RESPONSIVE
 ================================ */
 
-                @media (max-width:767.98px) {
+            @media (max-width:767.98px) {
 
-                    .main-footer {
-                        text-align: center;
-                    }
-
-                    .footer-widget-logo {
-                        display: flex;
-                        justify-content: center;
-                    }
-
-                    .footer-widget-title h4:after {
-                        margin-left: auto;
-                        margin-right: auto;
-                    }
-
-                    .footer-social ul {
-                        justify-content: center;
-                    }
-
-                    .api-links {
-                        display: flex;
-                        justify-content: center;
-                    }
-
+                .main-footer {
+                    text-align: center;
                 }
+
+                .footer-widget-logo {
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .footer-widget-title h4:after {
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .footer-social ul {
+                    justify-content: center;
+                }
+
+                .api-links {
+                    display: flex;
+                    justify-content: center;
+                }
+
+            }
             </style>
 
 
@@ -264,6 +296,7 @@
                                         <li><a href="{{ route('webite-about') }}">About</a></li>
                                         <li><a href="{{ route('webite-business') }}">Business</a></li>
                                         <li><a href="{{ route('webite-blog') }}">Blog</a></li>
+                                        <li><a href="{{ route('seo.pages.show', 'usa-business-buyers') }}">USA Business Buyers</a></li>
                                         <li><a href="{{ route('webite-contact') }}">Contact Us</a></li>
                                     </ul>
                                 </div>
@@ -381,13 +414,13 @@
 
                                                 {{-- ✅ Errors show (IMPORTANT) --}}
                                                 @if ($errors->any())
-                                                    <div class="alert alert-danger" style="margin-bottom:10px;">
-                                                        <ul style="margin:0; padding-left:18px;">
-                                                            @foreach ($errors->all() as $error)
-                                                                <li>{{ $error }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
+                                                <div class="alert alert-danger" style="margin-bottom:10px;">
+                                                    <ul style="margin:0; padding-left:18px;">
+                                                        @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
                                                 @endif
                                                 <label>Full Name * <span class="dec-icon"><i
                                                             class="fal fa-user"></i></span></label>
@@ -402,8 +435,8 @@
                                                 <div class="pass-input-wrap fl-wrap">
                                                     <label>Password * <span class="dec-icon"><i
                                                                 class="fal fa-key"></i></span></label>
-                                                    <input name="password" type="password"
-                                                        placeholder="Your Password" autocomplete="new-password">
+                                                    <input name="password" type="password" placeholder="Your Password"
+                                                        autocomplete="new-password">
                                                     <span class="eye"><i class="fal fa-eye"></i></span>
                                                 </div>
 
@@ -417,8 +450,8 @@
 
                                                 {{-- ✅ terms name must be "terms" (backend jaisa) --}}
                                                 <div class="filter-tags ft-list">
-                                                    <input id="terms-conditions" type="checkbox" name="terms"
-                                                        value="1" required>
+                                                    <input id="terms-conditions" type="checkbox" name="terms" value="1"
+                                                        required>
                                                     <label for="terms-conditions">
                                                         I agree to the <a
                                                             href="{{ route('webite-privacy-policy') }}">Privacy
@@ -445,20 +478,20 @@
     <script src="{{ asset('js/plugins.js') }}"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script>
-        $(document).on('click', '[data-open-tab="register"]', function() {
-            // modal open trigger aapke theme ka already class "modal-open/show-reg-form" karega
-            // yahan hum register tab click karwa rahe hain:
-            setTimeout(function() {
-                $('.tabs-menu a[href="#tab-2"]').trigger('click');
-            }, 50);
-        });
+    $(document).on('click', '[data-open-tab="register"]', function() {
+        // modal open trigger aapke theme ka already class "modal-open/show-reg-form" karega
+        // yahan hum register tab click karwa rahe hain:
+        setTimeout(function() {
+            $('.tabs-menu a[href="#tab-2"]').trigger('click');
+        }, 50);
+    });
 
-        $(document).on('click', '.show-reg-form:not([data-open-tab])', function() {
-            // normal Sign In pe login tab hi rahe
-            setTimeout(function() {
-                $('.tabs-menu a[href="#tab-1"]').trigger('click');
-            }, 50);
-        });
+    $(document).on('click', '.show-reg-form:not([data-open-tab])', function() {
+        // normal Sign In pe login tab hi rahe
+        setTimeout(function() {
+            $('.tabs-menu a[href="#tab-1"]').trigger('click');
+        }, 50);
+    });
     </script>
 
 </body>

@@ -113,7 +113,7 @@
 
                                     <!-- Top Center Image -->
                                     <div class="listing-image-wrapper text-center mt-3">
-                                        <img src="{{ rtrim('storage/app/public/', '/') . '/' . $listing->business_img }}"
+                                        <img src="{{ asset('storage/' . ltrim($listing->business_img, '/')) }}"
                                             class="listing-image" alt="Business">
                                     </div>
 
@@ -162,9 +162,12 @@
 
                                         <!-- Enquire Button -->
                                         @if (auth()->user()->role === 'Seller' || auth()->user()->role === 'Admin')
+                                            @php
+                                                $sellerUnreadEnquiryCount = (int) ($unreadEnquiryByListing[$listing->id] ?? 0);
+                                            @endphp
                                             <a class="btn btn-warning btn-sm flex-grow-1"
                                                 href="{{ route('seller.listing.enquiries', e_id($listing->id)) }}">
-                                                Enquire ({{ $listing->enquiries->where('status', 'pending')->count() }})
+                                                Enquire ({{ auth()->user()->role === 'Seller' ? $sellerUnreadEnquiryCount : $listing->enquiries->where('status', 'pending')->count() }})
                                             </a>
                                         @elseif (auth()->user()->role === 'Buyer')
                                             @if ($listing->enquiries->where('user_id', auth()->id())->count() > 0)
@@ -196,9 +199,11 @@
                                             }
                                         @endphp
 
-                                        @if ($chatWith)
+                                        @if ($chatWith && ($user->role !== 'Seller' || $unreadCount > 0))
                                             <a href="{{ url('chatify/' . $chatWith . '?listing_id=' . $listing->id) }}"
-                                                class="btn btn-success btn-sm position-relative">
+                                                class="btn btn-success btn-sm position-relative js-chat-open"
+                                                data-chatwith="{{ $chatWith }}"
+                                                data-listing="{{ $listing->id }}">
                                                 <i class="ti ti-message"></i> Chat
 
                                                 @if ($unreadCount > 0)
@@ -263,6 +268,38 @@
                             text-align: center;
                         }
                     </style>
+
+                    <script>
+                        // Clear chat badge immediately on open (no refresh needed)
+                        document.addEventListener('click', function(e) {
+                            const a = e.target.closest('.js-chat-open');
+                            if (!a) return;
+
+                            // Hide badge right away
+                            const badge = a.querySelector('.badge');
+                            if (badge) badge.remove();
+
+                            // Also mark notifications as seen in background (best-effort)
+                            const chatWith = a.getAttribute('data-chatwith');
+                            const listingId = a.getAttribute('data-listing');
+                            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                            if (!token || !chatWith) return;
+
+                            const body = new URLSearchParams();
+                            body.set('_token', token);
+                            body.set('id', chatWith);
+                            if (listingId) body.set('listing_id', listingId);
+
+                            fetch("{{ url('chatify/makeSeen') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                body: body.toString()
+                            }).catch(() => {});
+                        }, true);
+                    </script>
 
                 </div>
             </div>

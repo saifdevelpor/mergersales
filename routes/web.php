@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\SeoController as AdminSeoController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Buyer\NotificationController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\ManagedBlogController;
+use App\Http\Controllers\SeoFrontendController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WebsiteController;
@@ -27,6 +30,19 @@ use Illuminate\Support\Facades\Http;
 
 Route::get('/', [WebsiteController::class, 'home'])->name('webite-home');
 Route::get('/Business', [WebsiteController::class, 'website_business'])->name('webite-business');
+Route::get('/business/{listing:slug}', [SeoFrontendController::class, 'showBusiness'])->name('seo.business.show');
+Route::get('/blog/{blog:slug}', [SeoFrontendController::class, 'showBlog'])->name('seo.blog.show');
+Route::get('/industry/{industry:slug}', [SeoFrontendController::class, 'showIndustry'])->name('seo.industry.show');
+Route::get('/country/{slug}', [SeoFrontendController::class, 'showCountry'])->name('seo.country.show');
+Route::get('/pages/{page:slug}', [AdminSeoController::class, 'publicPage'])->name('seo.pages.show');
+Route::get('/sitemap.xml', [AdminSeoController::class, 'publicSitemap'])->name('seo.sitemap');
+Route::get('/robots.txt', function () {
+    return response(
+        "User-agent: *\nAllow: /\nSitemap: " . url('/sitemap.xml') . "\n",
+        200,
+        ['Content-Type' => 'text/plain; charset=UTF-8']
+    );
+});
 Route::get('Business-single/{id}', [WebsiteController::class, 'website_business_single'])->name('business.single');
 Route::get('/About-Us', [WebsiteController::class, 'website_about'])->name('webite-about');
 Route::get('/Contact-Us', [WebsiteController::class, 'website_contact'])->name('webite-contact');
@@ -39,9 +55,6 @@ Route::get('/countries/autocomplete', [WebsiteController::class, 'countriesAutoc
 Route::get('/sub-industries/{industry}', [IndustryController::class, 'getSubIndustries'])->name('sub-industries.by-industry');
 Route::get('/businesses-for-sale/{industrySlug}/{subIndustrySlug?}', [ListingController::class, 'browseByIndustry'])
     ->name('listings.browseByIndustry');
-
-// Public: single blog view (if you want public)
-Route::get('/blog/{id}', [BlogController::class, 'single'])->name('blog.single');
 
 // Enquiry send normally public hota hai (visitors enquiry bhej sakte)
 Route::post('/enquiry/send', [EnquiryController::class, 'store'])->name('enquiry.store');
@@ -87,6 +100,28 @@ Route::post('/currency/set', [CurrencyController::class, 'set'])->name('currency
 | PROTECTED (Backend/Dashboard) Routes - Login required
 |--------------------------------------------------------------------------
 */
+
+/* ===============================
+ | PUBLIC SEO ROUTES
+ =============================== */
+Route::get(
+    '/businesses-for-sale/{industry_slug}/{dealtype}/{country}/{industry_id}/{subIndustry}',
+    [ListingController::class, 'browseByIndustry']
+);
+// SCO route (public facing, but dynamic based on parameters)
+Route::get('/businesses-for-sale/{slug1?}/{slug2?}/{slug3?}/{slug4?}', [SCOController::class, 'index']);
+
+Route::get('/admin/seo/{path?}', function (?string $path = null) {
+    $target = '/seo-manager';
+
+    if ($path) {
+        $target .= '/' . ltrim($path, '/');
+    }
+
+    return redirect($target, 301);
+})->where('path', '.*');
+
+Route::middleware('auth')->group(function () {
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -159,17 +194,6 @@ Route::delete('/listings/{listing}/delete', [ListingController::class, 'destroy'
 Route::get('/listings/{listing}', [ListingController::class, 'show'])
     ->name('listings.show');
 
-
-/* ===============================
- | PUBLIC SEO ROUTE
- =============================== */
-
-Route::get(
-    '/businesses-for-sale/{industry_slug}/{dealtype}/{country}/{industry_id}/{subIndustry}',
-    [ListingController::class, 'browseByIndustry']
-);
-
-
 Route::get('/notification/read/{from_id}', [ListingController::class, 'markAsRead'])->name('notification.read');
 
 // Enquiry status / NDA actions (should be protected)
@@ -213,13 +237,31 @@ Route::get('/chat/notifications', [MessagesController::class, 'notifications']);
 Route::post('/chat/notification/seen', [MessagesController::class, 'notificationSeen'])->name('notification.seen');
 
 // Blogs
-Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
-Route::post('/blogs/store', [BlogController::class, 'save'])->name('blogs.store');
-Route::post('/blogs/{blog}/update', [BlogController::class, 'update'])->name('blogs.update');
-Route::delete('/blogs/{blog}/delete', [BlogController::class, 'destroy'])->name('blogs.destroy');
+Route::get('/blogs', [ManagedBlogController::class, 'index'])->name('blogs.index');
+Route::post('/blogs/store', [ManagedBlogController::class, 'save'])->name('blogs.store');
+Route::post('/blogs/{blog}/update', [ManagedBlogController::class, 'update'])->name('blogs.update');
+Route::delete('/blogs/{blog}/delete', [ManagedBlogController::class, 'destroy'])->name('blogs.destroy');
 
-// SCO route (public facing, but dynamic based on parameters)
-Route::get('/businesses-for-sale/{slug1?}/{slug2?}/{slug3?}/{slug4?}', [SCOController::class, 'index']);
+Route::prefix('/seo-manager')
+    ->middleware('seo.manager')
+    ->name('admin.seo.')
+    ->group(function () {
+        Route::get('/', [AdminSeoController::class, 'index'])->name('index');
+        Route::get('/pages', [AdminSeoController::class, 'pages'])->name('pages');
+        Route::post('/pages/create', [AdminSeoController::class, 'storePage'])->name('pages.store');
+        Route::post('/pages/bulk-store', [AdminSeoController::class, 'bulkStorePages'])->name('pages.bulk-store');
+        Route::delete('/pages/bulk-delete', [AdminSeoController::class, 'bulkDestroyPages'])->name('pages.bulk-destroy');
+        Route::post('/pages/{page}', [AdminSeoController::class, 'updatePage'])->name('pages.update');
+        Route::delete('/pages/{page}', [AdminSeoController::class, 'destroyPage'])->name('pages.destroy');
+        Route::get('/listings', [AdminSeoController::class, 'listings'])->name('listings');
+        Route::post('/listings/{listing}', [AdminSeoController::class, 'updateListing'])->name('listings.update');
+        Route::get('/blogs', [AdminSeoController::class, 'blogs'])->name('blogs');
+        Route::post('/blogs/{blog}', [AdminSeoController::class, 'updateBlog'])->name('blogs.update');
+        Route::get('/sitemap', [AdminSeoController::class, 'sitemap'])->name('sitemap');
+        Route::post('/sitemap/generate', [AdminSeoController::class, 'generateSitemap'])->name('sitemap.generate');
+        Route::get('/schema', [AdminSeoController::class, 'schema'])->name('schema');
+        Route::get('/{slug}', [AdminSeoController::class, 'showSeoPage'])->name('showSeoPage');
+    });
 
 
 // View Tickets According Status
@@ -239,3 +281,5 @@ Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('ticket
 // ADMIN
 Route::get('/admin/tickets', [TicketController::class, 'adminIndex'])->name('admin.tickets');
 Route::post('/admin/tickets/{id}', [TicketController::class, 'updateStatus'])->name('ticket.updateStatus');
+
+});

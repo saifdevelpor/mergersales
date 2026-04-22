@@ -20,5 +20,14 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'role'      => 'Admin',
         ]);
+
+        User::firstOrCreate(
+            ['email' => 'seo.manager@gmail.com'],
+            [
+                'name' => 'SEO Manager',
+                'password' => Hash::make('12345678'),
+                'role' => 'seo_manager',
+            ]
+        );
     }
 }

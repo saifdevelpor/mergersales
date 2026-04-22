@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Mime\Email;
 
@@ -40,7 +41,7 @@ class UserController extends Controller
             'address'       => 'nullable|string',
             'profile_photo' => 'nullable|image',
             'email'         => 'required|email|unique:users,email',
-            'role'          => 'required|in:Admin,Seller,Buyer,Investor,Advisor,Corporate,Partner',
+            'role'          => 'required|in:Admin,Seller,Buyer,Investor,Advisor,Corporate,Partner,seo_manager',
             'password'      => 'required|string|min:8',
         ]);
 
@@ -68,6 +69,10 @@ class UserController extends Controller
 
         $user->save();
 
+        if (in_array($user->role, ['Admin', 'seo_manager'], true) && method_exists($user, 'syncRoles')) {
+            $user->syncRoles([strtolower($user->role)]);
+        }
+
         return redirect()->back()->with('success', 'User saved successfully!');
     }
 
@@ -84,7 +89,7 @@ class UserController extends Controller
             'address'       => 'nullable|string',
             'profile_photo' => 'nullable|image',
             'email'         => 'required|email|unique:users,email,' . $id,
-            'role'          => 'required|in:Admin,Seller,Buyer,Investor,Advisor,Corporate,Partner',
+            'role'          => 'required|in:Admin,Seller,Buyer,Investor,Advisor,Corporate,Partner,seo_manager',
             'password'      => 'nullable|string|min:8',
         ]);
 
@@ -117,17 +122,55 @@ class UserController extends Controller
             $user->profile_photo = 'uploads/profile_photos/' . $imageName;
         }
 
-        $user->save();
+        try {
+            $user->save();
 
-        return redirect()->back()->with('success', 'User updated successfully!');
+            if (in_array($user->role, ['Admin', 'seo_manager'], true) && method_exists($user, 'syncRoles')) {
+                $user->syncRoles([strtolower($user->role)]);
+            } elseif (method_exists($user, 'syncRoles')) {
+                $user->syncRoles([]);
+            }
+
+            return redirect()->back()->with('success', 'User updated successfully!');
+        } catch (\Throwable $e) {
+            Log::error('User update failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('error', 'User update failed. Please try again.');
+        }
     }
 
 
     public function delete($id)
     {
-        $user = User::find($id);
-        $user->delete();
-        return redirect()->back()->with('success', 'User deleted and email sent.');
+        $user = User::findOrFail($id);
+
+        if ((int) $user->id === (int) auth()->id()) {
+            return redirect()->back()->with('error', 'You cannot delete your own account while logged in.');
+        }
+
+        try {
+            if (method_exists($user, 'syncRoles')) {
+                $user->syncRoles([]);
+            }
+
+            if ($user->profile_photo && file_exists(public_path($user->profile_photo))) {
+                @unlink(public_path($user->profile_photo));
+            }
+
+            $user->delete();
+
+            return redirect()->back()->with('success', 'User deleted successfully.');
+        } catch (\Throwable $e) {
+            Log::error('User delete failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('error', 'User delete failed. This user may have related records.');
+        }
     }
 
     // Profile Methods

@@ -6,12 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory;
-    use Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+
+    protected string $guard_name = 'web';
 
     /**
      * The attributes that are mass assignable.
@@ -49,6 +52,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $user): void {
+            if (! Schema::hasTable('roles') || ! $user->role) {
+                return;
+            }
+
+            $legacyRole = match (strtolower((string) $user->role)) {
+                'admin' => 'admin',
+                'seo_manager' => 'seo_manager',
+                default => null,
+            };
+
+            if ($legacyRole) {
+                $user->syncRoles([$legacyRole]);
+            }
+        });
+    }
 
     public function messages()
     {

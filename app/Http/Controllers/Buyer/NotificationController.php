@@ -14,7 +14,24 @@ class NotificationController extends Controller
             ->firstOrFail();
 
         $notification->markAsRead();
+        $data = (array) $notification->data;
 
-        return redirect($notification->data['url'] ?? route('buyer.enquiries.pending'));
+        // Preferred: route-based redirect (host/environment safe)
+        if (!empty($data['route_name'])) {
+            $params = is_array($data['route_params'] ?? null) ? $data['route_params'] : [];
+            return redirect()->route($data['route_name'], $params);
+        }
+
+        // Backward compatibility for old notifications with absolute URLs
+        if (!empty($data['url'])) {
+            $url = (string) $data['url'];
+            $path = parse_url($url, PHP_URL_PATH);
+            if (!empty($path)) {
+                return redirect($path);
+            }
+            return redirect($url);
+        }
+
+        return redirect()->route('buyer.enquiries.pending');
     }
 }

@@ -30,6 +30,17 @@ class EnquiryController extends Controller
             $q->latest();
         }]);
 
+        // Seller/Admin opens listing enquiries => mark related seller notifications as read
+        if (in_array($user->role, ['Seller', 'Admin'])) {
+            $enquiryIds = $listing->enquiries->pluck('id')->map(fn($v) => (int) $v)->all();
+            if (!empty($enquiryIds)) {
+                $user->unreadNotifications()
+                    ->whereIn('data->type', ['new_enquiry', 'nda_signed'])
+                    ->whereIn('data->enquiry_id', $enquiryIds)
+                    ->update(['read_at' => now()]);
+            }
+        }
+
         return view('enquire.sellershow', compact('listing'));
     }
 

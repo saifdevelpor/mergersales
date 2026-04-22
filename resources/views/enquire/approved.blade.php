@@ -345,19 +345,11 @@ $badgeClass = $statusColors[$enquiry->status] ?? 'bg-secondary text-white';
                             resizeCanvas();
                         });
 
-                        window.clearSig {
-                            {
-                                $enquiry - > id
-                            }
-                        } = function() {
+                        window.clearSig{{ $enquiry->id }} = function() {
                             if (sigPad) sigPad.clear();
                         }
 
-                        window.submitSig {
-                            {
-                                $enquiry - > id
-                            }
-                        } = function() {
+                        window.submitSig{{ $enquiry->id }} = function() {
                             if (!sigPad || sigPad.isEmpty()) {
                                 Swal.fire({
                                     icon: 'warning',

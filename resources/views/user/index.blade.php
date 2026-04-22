@@ -60,6 +60,7 @@
                                     'Advisor' => '#6C757D', // gray
                                     'Corporate' => '#6610F2', // purple
                                     'Partner' => '#E83E8C', // pink
+                                    'seo_manager' => '#0F766E', // teal
                                 ];
 
                                 // Set color based on role, fallback to dark
@@ -68,7 +69,7 @@
 
                             <td>
                                 <span class="badge" style="background: {{ $bgColor }}; color: #fff;">
-                                    {{ $user->role }}
+                                    {{ $user->role === 'seo_manager' ? 'SEO Manager' : $user->role }}
                                 </span>
                             </td>
 
@@ -146,9 +147,9 @@
                             <div class="col-md-6">
                                 <label for="role{{ $user->id }}" class="form-label">Role</label>
                                 <select name="role" id="role{{ $user->id }}" class="form-control" required>
-                                    @foreach (['Admin', 'Seller', 'Buyer', 'Investor', 'Advisor', 'Corporate', 'Partner'] as $r)
+                                    @foreach (['Admin', 'Seller', 'Buyer', 'Investor', 'Advisor', 'Corporate', 'Partner', 'seo_manager'] as $r)
                                         <option value="{{ $r }}" {{ $user->role == $r ? 'selected' : '' }}>
-                                            {{ $r }}</option>
+                                            {{ $r === 'seo_manager' ? 'SEO Manager' : $r }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -237,6 +238,7 @@
                             <option value="Advisor">Advisor</option>
                             <option value="Corporate">Corporate</option>
                             <option value="Partner">Partner</option>
+                            <option value="seo_manager">SEO Manager</option>
                         </select>
                     </div>
 

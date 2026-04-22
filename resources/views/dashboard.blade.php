@@ -42,7 +42,7 @@
             <aside id="layout-menu" class="layout-menu menu-vertical menu menu-theme"
                 style="background-color: #FEFEFF;">
                 <div class="app-brand demo">
-                    <a href="#" class="app-brand-link">
+                    <a href="{{ route('dashboard.index') }}" class="app-brand-link">
                         <span class="app-brand-logo demo">
                             <img src="{{ asset('/assets/remove.logo.png') }}" alt="Project logo" />
                         </span>
@@ -56,240 +56,344 @@
                 <ul class="menu-inner py-1">
                     <li class="menu-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.index') }}" class="menu-link">
+                            <i class="ti ti-layout-dashboard me-3 ti-md"></i>
                             <div data-i18n="Dashboard">Dashboard</div>
                         </a>
                     </li>
                     @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
-                        <li class="menu-item {{ request()->routeIs('user-management') ? 'active' : '' }}">
-                            <a href="{{ route('user-management') }}" class="menu-link">
-                                <div data-i18n="User Management">User Management</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('user-management') ? 'active' : '' }}">
+                        <a href="{{ route('user-management') }}" class="menu-link">
+                            <i class="ti ti-users me-3 ti-md"></i>
+                            <div data-i18n="User Management">User Management</div>
+                        </a>
+                    </li>
                     @endif
 
+
+
+                    @if (Auth::check() && in_array(Auth::user()->role, ['Seller', 'Admin', 'Buyer']))
                     <li class="menu-header small text-uppercase">
                         <span class="menu-header-text text-muted">Business</span>
                     </li>
-
-                    @if (Auth::check() && in_array(Auth::user()->role, ['Seller', 'Admin', 'Buyer']))
-                        <li class="menu-item {{ request()->routeIs('listings.index') ? 'active' : '' }}">
-                            <a href="{{ route('listings.index') }}" class="menu-link">
-                                <div data-i18n="Businesses">Businesses</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('listings.index') ? 'active' : '' }}">
+                        <a href="{{ route('listings.index') }}" class="menu-link">
+                            <i class="ti ti-briefcase me-3 ti-md"></i>
+                            <div data-i18n="Businesses">Businesses</div>
+                        </a>
+                    </li>
                     @endif
                     @if (Auth::check() && in_array(Auth::user()->role, ['Seller', 'Admin']))
-                        <li class="menu-item {{ request()->routeIs('listings.approved') ? 'active' : '' }}">
-                            <a href="{{ route('listings.approved') }}" class="menu-link">
-                                <div data-i18n="Approved Listings">Approved Businesses</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('listings.pending') ? 'active' : '' }}">
-                            <a href="{{ route('listings.pending') }}" class="menu-link">
-                                <div data-i18n="Pending Listings">Pending Businesses</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('listings.rejected') ? 'active' : '' }}">
-                            <a href="{{ route('listings.rejected') }}" class="menu-link">
-                                <div data-i18n="Rejected Listings">Rejected Businesses</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('listings.approved') ? 'active' : '' }}">
+                        <a href="{{ route('listings.approved') }}" class="menu-link">
+                            <i class="ti ti-circle-check me-3 ti-md"></i>
+                            <div data-i18n="Approved Listings">Approved Businesses</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('listings.pending') ? 'active' : '' }}">
+                        <a href="{{ route('listings.pending') }}" class="menu-link">
+                            <i class="ti ti-clock-hour-4 me-3 ti-md"></i>
+                            <div data-i18n="Pending Listings">Pending Businesses</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('listings.rejected') ? 'active' : '' }}">
+                        <a href="{{ route('listings.rejected') }}" class="menu-link">
+                            <i class="ti ti-circle-x me-3 ti-md"></i>
+                            <div data-i18n="Rejected Listings">Rejected Businesses</div>
+                        </a>
+                    </li>
                     @endif
+
+                    @if (Auth::check() && in_array(Auth::user()->role, ['Seller']))
                     <li class="menu-header small text-uppercase">
                         <span class="menu-header-text text-muted">Enquires</span>
                     </li>
-                    @if (Auth::check() && in_array(Auth::user()->role, ['Seller']))
-                        <li class="menu-item {{ request()->routeIs('seller.enquiries.all') ? 'active' : '' }}">
-                            <a href="{{ route('seller.enquiries.all') }}" class="menu-link">
-                                <div data-i18n="All Enquire">All Enquire</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('seller.enquiries.approved') ? 'active' : '' }}">
-                            <a href="{{ route('seller.enquiries.approved') }}" class="menu-link">
-                                <div data-i18n="Approved Enquire">Approved Enquire</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('seller.enquiries.pending') ? 'active' : '' }}">
-                            <a href="{{ route('seller.enquiries.pending') }}" class="menu-link">
-                                <div data-i18n="Pending Enquire">Pending Enquire</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('seller.enquiries.rejected') ? 'active' : '' }}">
-                            <a href="{{ route('seller.enquiries.rejected') }}" class="menu-link">
-                                <div data-i18n="Rejected Enquire">Rejected Enquire</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('seller.enquiries.all') ? 'active' : '' }}">
+                        <a href="{{ route('seller.enquiries.all') }}" class="menu-link">
+                            <i class="ti ti-message-circle me-3 ti-md"></i>
+                            <div data-i18n="All Enquire">All Enquire</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('seller.enquiries.approved') ? 'active' : '' }}">
+                        <a href="{{ route('seller.enquiries.approved') }}" class="menu-link">
+                            <i class="ti ti-checkup-list me-3 ti-md"></i>
+                            <div data-i18n="Approved Enquire">Approved Enquire</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('seller.enquiries.pending') ? 'active' : '' }}">
+                        <a href="{{ route('seller.enquiries.pending') }}" class="menu-link">
+                            <i class="ti ti-hourglass-empty me-3 ti-md"></i>
+                            <div data-i18n="Pending Enquire">Pending Enquire</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('seller.enquiries.rejected') ? 'active' : '' }}">
+                        <a href="{{ route('seller.enquiries.rejected') }}" class="menu-link">
+                            <i class="ti ti-ban me-3 ti-md"></i>
+                            <div data-i18n="Rejected Enquire">Rejected Enquire</div>
+                        </a>
+                    </li>
                     @endif
                     @if (Auth::check() && in_array(Auth::user()->role, ['Buyer', 'Admin']))
-                        <li class="menu-item {{ request()->routeIs('buyer.enquiries.approved') ? 'active' : '' }}">
-                            <a href="{{ route('buyer.enquiries.approved') }}" class="menu-link">
-                                <div data-i18n="Enquire Approved">Enquire Approved</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('buyer.enquiries.pending') ? 'active' : '' }}">
-                            <a href="{{ route('buyer.enquiries.pending') }}" class="menu-link">
-                                <div data-i18n="Enquire Pending">Enquire Pending</div>
-                            </a>
-                        </li>
-                        <li class="menu-item {{ request()->routeIs('buyer.enquiries.rejected') ? 'active' : '' }}">
-                            <a href="{{ route('buyer.enquiries.rejected') }}" class="menu-link">
-                                <div data-i18n="Enquire Rejected">Enquire Rejected</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('buyer.enquiries.approved') ? 'active' : '' }}">
+                        <a href="{{ route('buyer.enquiries.approved') }}" class="menu-link">
+                            <i class="ti ti-checkup-list me-3 ti-md"></i>
+                            <div data-i18n="Enquire Approved">Enquire Approved</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('buyer.enquiries.pending') ? 'active' : '' }}">
+                        <a href="{{ route('buyer.enquiries.pending') }}" class="menu-link">
+                            <i class="ti ti-hourglass-empty me-3 ti-md"></i>
+                            <div data-i18n="Enquire Pending">Enquire Pending</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('buyer.enquiries.rejected') ? 'active' : '' }}">
+                        <a href="{{ route('buyer.enquiries.rejected') }}" class="menu-link">
+                            <i class="ti ti-ban me-3 ti-md"></i>
+                            <div data-i18n="Enquire Rejected">Enquire Rejected</div>
+                        </a>
+                    </li>
                     @endif
                     @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
-                        <li class="menu-header small text-uppercase">
-                            <span class="menu-header-text text-muted">Blog</span>
-                        </li>
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text text-muted">Blog</span>
+                    </li>
 
-                        <li class="menu-item {{ request()->routeIs('blogs.index') ? 'active' : '' }}">
-                            <a href="{{ route('blogs.index') }}" class="menu-link">
-                                <div data-i18n="Blog">Blog</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('blogs.index') ? 'active' : '' }}">
+                        <a href="{{ route('blogs.index') }}" class="menu-link">
+                            <i class="ti ti-notebook me-3 ti-md"></i>
+                            <div data-i18n="Blog">Blog</div>
+                        </a>
+                    </li>
                     @endif
+                    @if (Auth::check() && Auth::user()->role === 'seo_manager')
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text text-muted">SEO</span>
+                    </li>
+
+                    <li class="menu-item {{ request()->routeIs('admin.seo.index', 'admin.seo.listings', 'admin.seo.listings.*', 'admin.seo.blogs', 'admin.seo.blogs.*', 'admin.seo.sitemap', 'admin.seo.sitemap.*', 'admin.seo.schema', 'admin.seo.showSeoPage') ? 'active' : '' }}">
+                        <a href="{{ route('admin.seo.index') }}" class="menu-link">
+                            <i class="ti ti-world-search me-3 ti-md"></i>
+                            <div data-i18n="SEO Manager">SEO Manager</div>
+                        </a>
+                    </li>
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text text-muted">Create Page</span>
+                    </li>
+
+                    <li class="menu-item {{ request()->routeIs('admin.seo.pages', 'admin.seo.pages.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.seo.pages') }}" class="menu-link">
+                            <i class="ti ti-world-search me-3 ti-md"></i>
+                            <div data-i18n="Page Template">Page Template</div>
+                        </a>
+                    </li>
+                    @endif
+
+
+                    @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
                     <li class="menu-header small text-uppercase">
                         <span class="menu-header-text text-muted">Tickets</span>
                     </li>
-
-                    @if (Auth::check() && in_array(Auth::user()->role, ['Admin']))
-                        <li class="menu-item {{ request()->routeIs('admin.tickets') ? 'active' : '' }}">
-                            <a href="{{ route('admin.tickets') }}" class="menu-link">
-                                <div data-i18n="Support Tickets">Support Tickets</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('admin.tickets') ? 'active' : '' }}">
+                        <a href="{{ route('admin.tickets') }}" class="menu-link">
+                            <i class="ti ti-ticket me-3 ti-md"></i>
+                            <div data-i18n="Support Tickets">Support Tickets</div>
+                        </a>
+                    </li>
                     @endif
 
                     @if (Auth::check() && in_array(Auth::user()->role, ['Buyer', 'Seller']))
-                        <li class="menu-item {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
-                            <a href="{{ route('tickets.index') }}" class="menu-link">
-                                <div data-i18n="My Tickets">My Tickets</div>
-                            </a>
-                        </li>
+                    <li class="menu-item {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.index') }}" class="menu-link">
+                            <i class="ti ti-life-buoy me-3 ti-md"></i>
+                            <div data-i18n="My Tickets">My Tickets</div>
+                        </a>
+                    </li>
                     @endif
 
                     @auth
-                        @if (in_array(Auth::user()->role, ['Admin', 'Buyer', 'Seller']))
-                            @php
-                                $isAdmin = Auth::user()->role === 'Admin';
+                    @if (in_array(Auth::user()->role, ['Admin', 'Buyer', 'Seller']))
+                    @php
+                    $isAdmin = Auth::user()->role === 'Admin';
 
-                                // Labels role-wise
-                                $lblOpen = $isAdmin ? 'All Open Tickets' : 'My Open Tickets';
-                                $lblReview = $isAdmin ? 'All Under Review Tickets' : 'My Under Review Tickets';
-                                $lblComp = $isAdmin ? 'All Completed Tickets' : 'My Completed Tickets';
-                                $lblClosed = $isAdmin ? 'All Closed Tickets' : 'My Closed Tickets';
-                                $lblReject = $isAdmin ? 'All Rejected Tickets' : 'My Rejected Tickets';
+                    // Labels role-wise
+                    $lblOpen = $isAdmin ? 'All Open Tickets' : 'My Open Tickets';
+                    $lblReview = $isAdmin ? 'All Under Review Tickets' : 'My Under Review Tickets';
+                    $lblComp = $isAdmin ? 'All Completed Tickets' : 'My Completed Tickets';
+                    $lblClosed = $isAdmin ? 'All Closed Tickets' : 'My Closed Tickets';
+                    $lblReject = $isAdmin ? 'All Rejected Tickets' : 'My Rejected Tickets';
 
-                            @endphp
+                    @endphp
 
-                            {{-- OPEN --}}
-                            <li class="menu-item {{ request()->routeIs('tickets.open') ? 'active' : '' }}">
-                                <a href="{{ route('tickets.open') }}" class="menu-link">
-                                    <div data-i18n="Open Tickets">{{ $lblOpen }}</div>
-                                </a>
-                            </li>
+                    {{-- OPEN --}}
+                    <li class="menu-item {{ request()->routeIs('tickets.open') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.open') }}" class="menu-link">
+                            <i class="ti ti-circle-dot me-3 ti-md"></i>
+                            <div data-i18n="Open Tickets">{{ $lblOpen }}</div>
+                        </a>
+                    </li>
 
-                            {{-- UNDER REVIEW --}}
-                            <li class="menu-item {{ request()->routeIs('tickets.under_review') ? 'active' : '' }}">
-                                <a href="{{ route('tickets.under_review') }}" class="menu-link">
-                                    <div data-i18n="Under Review">{{ $lblReview }}</div>
-                                </a>
-                            </li>
+                    {{-- UNDER REVIEW --}}
+                    <li class="menu-item {{ request()->routeIs('tickets.under_review') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.under_review') }}" class="menu-link">
+                            <i class="ti ti-activity me-3 ti-md"></i>
+                            <div data-i18n="Under Review">{{ $lblReview }}</div>
+                        </a>
+                    </li>
 
-                            {{-- COMPLETED --}}
-                            <li class="menu-item {{ request()->routeIs('tickets.completed') ? 'active' : '' }}">
-                                <a href="{{ route('tickets.completed') }}" class="menu-link">
-                                    <div data-i18n="Completed">{{ $lblComp }}</div>
-                                </a>
-                            </li>
+                    {{-- COMPLETED --}}
+                    <li class="menu-item {{ request()->routeIs('tickets.completed') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.completed') }}" class="menu-link">
+                            <i class="ti ti-circle-check me-3 ti-md"></i>
+                            <div data-i18n="Completed">{{ $lblComp }}</div>
+                        </a>
+                    </li>
 
-                            {{-- CLOSED --}}
-                            <li class="menu-item {{ request()->routeIs('tickets.closed') ? 'active' : '' }}">
-                                <a href="{{ route('tickets.closed') }}" class="menu-link">
-                                    <div data-i18n="Closed">{{ $lblClosed }}</div>
-                                </a>
-                            </li>
+                    {{-- CLOSED --}}
+                    <li class="menu-item {{ request()->routeIs('tickets.closed') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.closed') }}" class="menu-link">
+                            <i class="ti ti-lock me-3 ti-md"></i>
+                            <div data-i18n="Closed">{{ $lblClosed }}</div>
+                        </a>
+                    </li>
 
-                            {{-- REJECTED --}}
-                            <li class="menu-item {{ request()->routeIs('tickets.rejected') ? 'active' : '' }}">
-                                <a href="{{ route('tickets.rejected') }}" class="menu-link">
-                                    <div data-i18n="Rejected">{{ $lblReject }}</div>
-                                </a>
-                            </li>
-                        @endif
+                    {{-- REJECTED --}}
+                    <li class="menu-item {{ request()->routeIs('tickets.rejected') ? 'active' : '' }}">
+                        <a href="{{ route('tickets.rejected') }}" class="menu-link">
+                            <i class="ti ti-circle-x me-3 ti-md"></i>
+                            <div data-i18n="Rejected">{{ $lblReject }}</div>
+                        </a>
+                    </li>
+                    @endif
                     @endauth
                 </ul>
             </aside>
             <style>
-                /* Active */
-                .menu-item.active>a {
-                    background-color: #CCAA57 !important;
-                    color: #fff !important;
-                }
+            :root {
+                --sidebar-accent: #CCAA57;
+                --sidebar-bg: #FEFEFF;
+                --sidebar-text: #111827;
+                --sidebar-muted: #6B7280;
+                --sidebar-hover: rgba(204, 170, 87, 0.12);
+                --sidebar-active: rgba(204, 170, 87, 0.18);
+                --sidebar-border: rgba(17, 24, 39, 0.10);
+            }
 
-                .menu-item.active>a i {
-                    color: #fff !important;
-                }
+            /* Sidebar container */
+            #layout-menu.layout-menu {
+                background: var(--sidebar-bg) !important;
+                border-right: 1px solid var(--sidebar-border);
+                box-shadow: 0 16px 40px rgba(17, 24, 39, 0.08);
+            }
 
-                /* Logo styling */
-                .app-brand-logo.demo {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 180px;
-                    height: 68px;
-                }
+            /* Logo area */
+            .app-brand.demo {
+                padding: 14px 16px 10px;
+                border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+            }
 
-                .app-brand-logo.demo img {
-                    max-width: 100%;
-                    max-height: 100%;
-                    object-fit: contain;
-                }
+            /* Logo styling */
+            .app-brand-logo.demo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 180px;
+                height: 68px;
+            }
 
-                /* Sidebar height adjustments */
-                .dark-style .menu .app-brand.demo {
-                    height: 120px;
-                }
+            .app-brand-logo.demo img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
 
-                .light-style .menu .app-brand.demo {
-                    height: 80px;
-                }
+            /* Sidebar height adjustments */
+            .dark-style .menu .app-brand.demo {
+                height: 120px;
+            }
 
-                /* Menu links default */
-                .menu-item a {
-                    color: #000;
-                    /* black text */
-                    display: flex;
-                    align-items: center;
-                    transition: all 0.3s ease;
-                }
+            .light-style .menu .app-brand.demo {
+                height: 80px;
+            }
 
-                /* Icons default */
-                .menu-item a i {
-                    color: #000;
-                    /* black icons */
-                }
+            /* Menu spacing */
+            .menu-inner {
+                padding: 6px 12px 14px !important;
+            }
 
-                /* Hover effect */
-                .menu-item a:hover {
-                    background-color: #CCAA57 !important;
-                    color: #fff !important;
-                }
+            /* Section headers */
+            .menu-header {
+                margin-top: 10px;
+                padding: 10px 12px 6px;
+            }
 
-                .menu-item a:hover i {
-                    color: #fff !important;
-                }
+            .menu-header .menu-header-text {
+                letter-spacing: 0.12em;
+                font-weight: 900;
+                color: var(--sidebar-muted) !important;
+                font-size: 10px;
+            }
 
+            /* Menu links */
+            .menu-item>.menu-link {
+                position: relative;
+                margin: 4px 6px;
+                padding: 10px 12px;
+                border-radius: 14px;
+                color: var(--sidebar-text) !important;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 850;
+                transition: background-color 160ms ease, transform 160ms ease, color 160ms ease, box-shadow 160ms ease;
+            }
 
-                /* Table header styling */
-                .table-header th {
-                    color: #000 !important;
-                }
+            .menu-item>.menu-link i {
+                color: var(--sidebar-muted);
+                transition: color 160ms ease;
+            }
 
-                /* Hide customizer button */
-                .template-customizer-open-btn {
-                    display: none !important;
-                }
+            /* Hover */
+            .menu-item>.menu-link:hover {
+                background-color: var(--sidebar-hover) !important;
+                transform: translateX(2px);
+                color: var(--sidebar-text) !important;
+                box-shadow: 0 10px 22px rgba(17, 24, 39, 0.06);
+            }
+
+            .menu-item>.menu-link:hover i {
+                color: var(--sidebar-accent);
+            }
+
+            /* Active (pill + left indicator) */
+            .menu-item.active>.menu-link {
+                background-color: var(--sidebar-active) !important;
+                color: var(--sidebar-text) !important;
+                font-weight: 950;
+            }
+
+            .menu-item.active>.menu-link i {
+                color: var(--sidebar-accent) !important;
+            }
+
+            .menu-item.active>.menu-link::before {
+                content: "";
+                position: absolute;
+                left: -6px;
+                top: 12px;
+                bottom: 12px;
+                width: 4px;
+                border-radius: 999px;
+                background: var(--sidebar-accent);
+            }
+
+            /* Table header styling */
+            .table-header th {
+                color: #000 !important;
+            }
+
+            /* Hide customizer button */
+            .template-customizer-open-btn {
+                display: none !important;
+            }
             </style>
 
 
@@ -409,12 +513,35 @@
 
     <!-- ================= CUSTOM INIT ================= -->
     <script>
-        $(function() {
-            $('#myTable, #myTable1, #myTable2, #myTable3').DataTable({
-                responsive: true,
-                autoWidth: false
-            });
+    $(function() {
+        $('#myTable, #myTable1, #myTable2, #myTable3').DataTable({
+            responsive: true,
+            autoWidth: false
         });
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    (function() {
+        const success = @json(session('success'));
+        const error = @json(session('error'));
+        if (success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: success,
+                confirmButtonColor: '#CCAA57'
+            });
+        } else if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error,
+                confirmButtonColor: '#CCAA57'
+            });
+        }
+    })();
     </script>
 </body>
 

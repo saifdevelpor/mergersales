@@ -12,6 +12,10 @@ var messenger,
   dark_mode,
   messages_page = 1;
 
+// Fallback polling state (when Pusher isn't delivering)
+let currentLastMessageId = null;
+let currentChatIdForPolling = null;
+
 const messagesContainer = $(".messenger-messagingView .m-body"),
   messengerTitleDefault = $(".messenger-headTitle").text(),
   messageInputContainer = $(".messenger-sendCard"),
@@ -459,6 +463,7 @@ function sendMessage() {
       dataType: "JSON",
       processData: false,
       contentType: false,
+      timeout: 30000,
       beforeSend: () => {
         // remove message hint
         $(".messages").find(".message-hint").hide();
@@ -581,6 +586,11 @@ function fetchMessages(id, newFetch = false) {
       dataType: "JSON",
       success: (data) => {
         setMessagesLoading(false);
+        // Track last message id for polling comparisons
+        if (data && Object.prototype.hasOwnProperty.call(data, "last_message_id")) {
+          currentLastMessageId = data.last_message_id;
+          currentChatIdForPolling = id;
+        }
         if (messagesPage == 1) {
           messagesElement.html(data.messages);
           scrollToBottom(messagesContainer);
@@ -603,12 +613,65 @@ function fetchMessages(id, newFetch = false) {
           disableOnLoad(false);
         }
       },
-      error: (error) => {
+      error: (xhr) => {
         setMessagesLoading(false);
-        console.error(error);
+        console.error("fetchMessages failed:", xhr?.status, xhr?.responseText);
       },
     });
   }
+}
+
+/**
+ *-------------------------------------------------------------
+ * Fallback: refresh ticks without Pusher
+ * If user opens chat and Pusher seen-event doesn't arrive,
+ * we re-fetch messages only when there are pending single-ticks.
+ *-------------------------------------------------------------
+ */
+function refreshSeenTicksIfNeeded() {
+  try {
+    if (messenger == 0) return;
+    const hasSingleTick = messagesContainer
+      .find(".messages .message-card.mc-sender .message-time .fa-check")
+      .length;
+    if (!hasSingleTick) return;
+    // Re-fetch first page to update seen icons from DB.
+    fetchMessages(getMessengerId(), true);
+  } catch (e) {}
+}
+
+/**
+ *-------------------------------------------------------------
+ * Poll for new messages (fallback when realtime isn't working)
+ * Lightweight: fetch only last_message_id via per_page=1
+ *-------------------------------------------------------------
+ */
+function pollNewMessagesIfNeeded() {
+  try {
+    if (messenger == 0) return;
+    const id = getMessengerId();
+    if (!id) return;
+    // Only poll if we have a chat open
+    $.ajax({
+      url: url + "/fetchMessages",
+      method: "POST",
+      data: {
+        _token: csrfToken,
+        id: id,
+        page: 1,
+        per_page: 1,
+      },
+      dataType: "JSON",
+      success: (data) => {
+        const lastId = data?.last_message_id ?? null;
+        if (lastId && lastId !== currentLastMessageId) {
+          // New message arrived -> refresh messages + seen state
+          fetchMessages(id, true);
+        }
+      },
+      error: () => {},
+    });
+  } catch (e) {}
 }
 
 /**
@@ -778,7 +841,11 @@ function makeSeen(status) {
   $.ajax({
     url: url + "/makeSeen",
     method: "POST",
-    data: { _token: csrfToken, id: getMessengerId() },
+    data: {
+      _token: csrfToken,
+      id: getMessengerId(),
+      listing_id: $("meta[name=listing-id]").attr("content") || null,
+    },
     dataType: "JSON",
   });
   return clientSendChannel.trigger("client-seen", {
@@ -1737,3 +1804,13 @@ function updateElementsDateToTimeAgo() {
 setInterval(() => {
   updateElementsDateToTimeAgo();
 }, 60000);
+
+// Periodically refresh seen ticks (fallback when realtime seen event isn't available)
+setInterval(() => {
+  refreshSeenTicksIfNeeded();
+}, 8000);
+
+// Periodically poll for new messages (fallback when realtime isn't available)
+setInterval(() => {
+  pollNewMessagesIfNeeded();
+}, 3500);

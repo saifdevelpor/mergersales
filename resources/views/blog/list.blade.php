@@ -37,7 +37,9 @@
                     <tr>
                         <th>#</th>
                         <th>Image</th>
-                        <th>Details</th>
+                        <th>Title</th>
+                        <th>Slug</th>
+                        <th>SEO</th>
                         <th>Created</th>
                         <th>Actions</th>
                     </tr>
@@ -59,9 +61,20 @@
                                 @endif
                             </td>
 
-                            {{-- DETAILS snippet --}}
-                            <td style="max-width:520px; white-space:normal;">
-                                {{ \Illuminate\Support\Str::limit(strip_tags($blog->details), 90) }}
+                            <td style="max-width:240px; white-space:normal;">
+                                <div style="font-weight:600;">{{ $blog->title ?: 'Untitled Blog' }}</div>
+                                <div style="color:#6b7280; font-size:13px;">
+                                    {{ \Illuminate\Support\Str::limit(strip_tags($blog->details), 70) }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <code>{{ $blog->slug ?: 'auto-generated' }}</code>
+                            </td>
+
+                            <td style="max-width:280px; white-space:normal;">
+                                <div><strong>SEO Title:</strong> {{ $blog->seo_title ?: 'Default title' }}</div>
+                                <div><strong>Meta:</strong> {{ \Illuminate\Support\Str::limit($blog->seo_description ?: 'Default description', 70) }}</div>
                             </td>
 
                             <td>{{ $blog->created_at?->format('d M Y') }}</td>
@@ -145,7 +158,7 @@
         <div class="modal fade" id="editBlog{{ $blog->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <form method="POST" action="{{ route('blogs.update', e_id($blog->id)) }}" enctype="multipart/form-data"
-                    class="modal-content">
+                    class="modal-content ckeditor-form">
                     @csrf
                     {{-- ✅ Add method spoofing (recommended) --}}
                     @method('POST')
@@ -156,6 +169,19 @@
                     </div>
 
                     <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Blog Title</label>
+                                <input type="text" class="form-control" name="title"
+                                    value="{{ old('title', $blog->title) }}" placeholder="Enter blog title">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Slug</label>
+                                <input type="text" class="form-control" name="slug"
+                                    value="{{ old('slug', $blog->slug) }}" placeholder="auto-generated-from-title">
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label">Image</label>
@@ -174,6 +200,37 @@
                             <textarea name="details" class="form-control ckeditor" rows="10">{{ $blog->details }}</textarea>
                         </div>
 
+                        <hr>
+
+                        <h6 style="font-weight:600;">SEO Fields</h6>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SEO Title</label>
+                                <input type="text" class="form-control" name="seo_title"
+                                    value="{{ old('seo_title', $blog->seo_title) }}" maxlength="255">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Featured Image Alt</label>
+                                <input type="text" class="form-control" name="featured_image_alt"
+                                    value="{{ old('featured_image_alt', $blog->featured_image_alt) }}" maxlength="255">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">SEO Description</label>
+                            <textarea class="form-control" name="seo_description" rows="3"
+                                maxlength="1000">{{ old('seo_description', $blog->seo_description) }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">OG Image URL/Path</label>
+                            <input type="text" class="form-control" name="og_image"
+                                value="{{ old('og_image', $blog->og_image) }}"
+                                placeholder="uploads/blogs/example.webp or https://...">
+                        </div>
+
                         <div class="d-grid mt-3">
                             <button type="submit" class="btn" style="background:#CCAA57; color:white;">
                                 Update Blog
@@ -190,7 +247,7 @@
     <div class="modal fade" id="createBlogModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form method="POST" action="{{ route('blogs.store') }}" enctype="multipart/form-data"
-                class="modal-content">
+                class="modal-content ckeditor-form">
                 @csrf
 
                 <div class="modal-header">
@@ -199,6 +256,19 @@
                 </div>
 
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Blog Title</label>
+                            <input type="text" class="form-control" name="title"
+                                value="{{ old('title') }}" placeholder="Enter blog title">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Slug</label>
+                            <input type="text" class="form-control" name="slug"
+                                value="{{ old('slug') }}" placeholder="auto-generated-from-title">
+                        </div>
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label">Image *</label>
@@ -208,6 +278,35 @@
                     <div class="mb-3">
                         <label>Contact / Details</label>
                         <textarea name="details" class="form-control ckeditor" rows="50"></textarea>
+                    </div>
+
+                    <hr>
+
+                    <h6 style="font-weight:600;">SEO Fields</h6>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SEO Title</label>
+                            <input type="text" class="form-control" name="seo_title"
+                                value="{{ old('seo_title') }}" maxlength="255">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Featured Image Alt</label>
+                            <input type="text" class="form-control" name="featured_image_alt"
+                                value="{{ old('featured_image_alt') }}" maxlength="255">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">SEO Description</label>
+                        <textarea class="form-control" name="seo_description" rows="3" maxlength="1000">{{ old('seo_description') }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">OG Image URL/Path</label>
+                        <input type="text" class="form-control" name="og_image"
+                            value="{{ old('og_image') }}" placeholder="uploads/blogs/example.webp or https://...">
                     </div>
 
                     <div class="d-grid mt-3">
@@ -263,6 +362,39 @@
     </script>
 
     {{-- ✅ CKEditor (Single Clean Init) --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function slugify(value) {
+                return (value || '')
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            }
+
+            document.querySelectorAll('form').forEach(function(form) {
+                const titleInput = form.querySelector('input[name="title"]');
+                const slugInput = form.querySelector('input[name="slug"]');
+
+                if (!titleInput || !slugInput) {
+                    return;
+                }
+
+                titleInput.addEventListener('input', function() {
+                    if (!slugInput.dataset.touched || slugInput.value.trim() === '') {
+                        slugInput.value = slugify(titleInput.value);
+                    }
+                });
+
+                slugInput.addEventListener('input', function() {
+                    slugInput.dataset.touched = 'true';
+                });
+            });
+        });
+    </script>
+
     <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {

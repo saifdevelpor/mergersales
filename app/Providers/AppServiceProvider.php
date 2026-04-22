@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\ChMessage;
 use App\Models\ChatNotification;
+use App\Models\Page;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer('home', function ($view): void {
+            $view->with('seoPageMap', Page::query()->get()->keyBy('route_name'));
+        });
+
         ChMessage::created(function (ChMessage $message): void {
             // Ignore self messages (e.g. saved messages)
             if ((int) $message->from_id === (int) $message->to_id) {

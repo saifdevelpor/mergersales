@@ -43,19 +43,18 @@
                                     </div>
                                 @else
                                     <img src="{{ asset($featured) }}" class="respimg single-blog-main-image"
-                                        alt="{{ $blog->title }}">
+                                        alt="{{ $blog->featured_image_alt ?: $blog->title }}">
                                 @endif
                             </div>
 
                             {{-- Content --}}
                             <div class="list-single-main-item fl-wrap block_box">
                                 <div class="single-article-header fl-wrap">
-                                    <h2 class="post-opt-title">
-                                        @php
-                                            $bodyHtml = $blog->description ?? ($blog->details ?? '');
-                                        @endphp
-                                        {!! \Illuminate\Support\Str::limit(htmlspecialchars_decode($bodyHtml), 150) !!}
-                                    </h2>
+                                    @php
+                                        $bodyHtml = $blog->description ?? ($blog->details ?? '');
+                                        $displayTitle = $blog->title ?: \Illuminate\Support\Str::limit(strip_tags(htmlspecialchars_decode($bodyHtml)), 120);
+                                    @endphp
+                                    <h1 class="post-opt-title">{{ $displayTitle }}</h1>
 
                                     <span class="fw-separator"></span>
                                     <div class="clearfix"></div>
@@ -114,7 +113,7 @@
                                                             : asset('images/default-blog.jpg');
 
                                                         // ✅ Single page link
-                                                        $url = route('webite-blog-single', e_id($rp->id));
+                                                        $url = route('seo.blog.show', $rp->slug);
                                                     @endphp
 
                                                     <li>
@@ -190,7 +189,7 @@
                                                 $img = $p->image ? asset($p->image) : asset('images/default-blog.jpg');
 
                                                 // ✅ blog link
-                                                $url = route('webite-blog-single', e_id($p->id));
+                                                $url = route('seo.blog.show', $p->slug);
                                             @endphp
 
                                             <li>

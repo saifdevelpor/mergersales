@@ -43,6 +43,7 @@ class ListingController extends Controller
         // notifications (same as your code)
         $unreadByListing = collect();
         $lastSenderByListing = collect();
+        $unreadEnquiryByListing = collect();
 
         if ($user->role === 'Seller') {
             $unreadByListing = ChatNotification::select('listing_id', DB::raw('COUNT(*) as unread_count'))
@@ -50,6 +51,33 @@ class ListingController extends Controller
                 ->where('seen', 0)
                 ->groupBy('listing_id')
                 ->pluck('unread_count', 'listing_id');
+
+            // Unread enquiry-notification count per listing (for Enquire button)
+            $unreadNotifIds = $user->unreadNotifications()
+                ->whereIn('data->type', ['new_enquiry', 'nda_signed'])
+                ->pluck('id');
+            if ($unreadNotifIds->isNotEmpty()) {
+                $notifRows = $user->unreadNotifications()
+                    ->whereIn('id', $unreadNotifIds)
+                    ->get(['id', 'data']);
+                $enquiryIds = $notifRows
+                    ->pluck('data.enquiry_id')
+                    ->filter()
+                    ->map(fn($v) => (int) $v)
+                    ->unique()
+                    ->values();
+                if ($enquiryIds->isNotEmpty()) {
+                    $enquiryListingMap = \App\Models\Enquiry::whereIn('id', $enquiryIds)
+                        ->pluck('listing_id', 'id');
+                    $unreadEnquiryByListing = $notifRows
+                        ->map(function ($n) use ($enquiryListingMap) {
+                            $eid = (int) data_get($n->data, 'enquiry_id');
+                            return (int) ($enquiryListingMap[$eid] ?? 0);
+                        })
+                        ->filter()
+                        ->countBy();
+                }
+            }
 
             // Determine latest buyer per listing from notifications (listing-aware source).
             $lastSenderByListing = ChatNotification::select('listing_id', DB::raw('MAX(id) as last_id'))
@@ -70,7 +98,7 @@ class ListingController extends Controller
                 ->pluck('unread_count', 'listing_id');
         }
 
-        return view('listing.list', compact('listings', 'industries', 'unreadByListing', 'lastSenderByListing'));
+        return view('listing.list', compact('listings', 'industries', 'unreadByListing', 'lastSenderByListing', 'unreadEnquiryByListing'));
     }
 
 
